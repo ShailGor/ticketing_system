@@ -1,8 +1,8 @@
 declare namespace QuestionEnvironment {
     export interface questionInterface {
         id?: number;
-        uuid?: number;
-        user_id?: string;
+        uuid?: string;
+        user_id?: number;
         title?: string;
         description?: string;
         is_published?: Boolean;
@@ -14,7 +14,7 @@ declare namespace QuestionEnvironment {
     }
 
     export interface associateInterface extends questionInterface {
-        questionTag?: any;
+        questionTags?: any;
     }
 }
 

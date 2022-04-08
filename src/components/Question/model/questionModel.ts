@@ -3,7 +3,7 @@ import { User } from '../../User/schema';
 import Question from '../schema';
 import { questionTag } from '../schema/questionSchema';
 import { Tag } from '../schema/tagSchema';
-import { questionInterface } from '../types/questionTypes';
+import { associateInterface, questionInterface } from '../types/questionTypes';
 
 export async function getMany(page: number, recordsPerPage: number, condition: any, order: any, attributes: string[] = []) {
     let { count, rows } = await Question.findAndCountAll({
@@ -19,6 +19,7 @@ export async function getMany(page: number, recordsPerPage: number, condition: a
             {
                 model: User,
                 as: 'user',
+                attributes: ['display_name', 'email'],
             },
         ],
         order: order,
@@ -43,7 +44,7 @@ export async function getOne(condition: any = {}, attributes: string[] = [], oth
                 {
                     model: User,
                     as: 'user',
-                    // attributes: ['first_name', 'last_name', 'display_name', 'email', 'phone_number', 'created_at', 'updated_at'],
+                    attributes: ['display_name', 'email'],
                 },
             ],
             ...other,
@@ -56,6 +57,8 @@ export async function getOne(condition: any = {}, attributes: string[] = [], oth
 
 export async function addQuestion(data: any, transaction: Transaction | undefined = undefined): Promise<Question | boolean> {
     try {
+        console.log('data: ', data);
+
         let insertedObj: any = await Question.create(data, {
             include: {
                 association: questionTag,

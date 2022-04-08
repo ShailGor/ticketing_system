@@ -74,17 +74,14 @@ export const addQuestion = async (req: customRequest, res: Response) => {
 
         let tags_array: any = JSON.parse(body.tags!);
         // console.log(tags_array);
-        body.questionTag = tags_array.map((t_id: number) => {
-            // return {a_id};
+        body.questionTags = tags_array.map((t_id: number) => {
             return { tag_id: t_id };
         });
-        console.log(body.questionTag);
+        console.log(body.questionTags);
 
         let image = req.files.image ? req.files.image : null;
 
         if (image !== null) {
-            //     body.image = null;
-            // } else {
             let imageExtension = path.extname(image.name);
             let imageName = 'img-' + Date.now() + imageExtension;
 
@@ -94,10 +91,13 @@ export const addQuestion = async (req: customRequest, res: Response) => {
 
             body.image = imageName;
         }
+        console.log(body);
 
         transaction = await sequelize.transaction();
         let addQuestion: any = await questionModel.addQuestion(body);
         await transaction.commit();
+
+        console.log(addQuestion);
 
         return helper.createResponse(res, res.__('QUESTION.created'), addQuestion, constants.SUCCESS);
     } catch (e: any) {

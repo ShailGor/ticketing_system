@@ -46,6 +46,8 @@ export async function getOne(condition: any = {}, attributes: string[] = [], oth
 
 export async function createUser(data: any): Promise<User | boolean> {
     try {
+        console.log('userData: ', data);
+
         let insertedObj: any = await User.create(data, {
             include: {
                 association: userSkill,
