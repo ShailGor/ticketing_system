@@ -189,7 +189,7 @@ export const logout = async function (req: customRequest, res: Response) {
     let token = req.headers.authorization;
     let uuid: any = req.custom?.uuid;
     try {
-        console.log(token);
+        // console.log(token);
 
         let verify_token = await client.hGet(uuid, 'jwt_token');
 

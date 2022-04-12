@@ -2,7 +2,7 @@ import { NextFunction, Response } from 'express';
 import { customRequest } from '../../../environment';
 import constants from '../../../utils/constants';
 import helper from '../../../utils/helper';
-import { isEmpty } from '../../../utils/validator/customValidations';
+import { checkImageSize, checkImageType, isEmpty } from '../../../utils/validator/customValidations';
 
 class QuestionValidation {
     add(req: customRequest, res: Response, next: NextFunction) {
@@ -22,6 +22,12 @@ class QuestionValidation {
 
         if (!is_published) {
             return helper.createResponse(res, res.__('QUESTION.Validations.is_published.required'), undefined, constants.VALIDATION_SERVER_ERR);
+        }
+
+        if (checkImageSize(req.files.image) === false) {
+            return helper.createResponse(res, res.__('QUESTION.Validations.image.size'), undefined, constants.VALIDATION_SERVER_ERR);
+        } else if (checkImageType(req.files.image) === false) {
+            return helper.createResponse(res, res.__('QUESTION.Validations.image.type'), undefined, constants.VALIDATION_SERVER_ERR);
         }
 
         next();
@@ -45,6 +51,11 @@ class QuestionValidation {
             if (isEmpty(is_published)) {
                 return helper.createResponse(res, res.__('QUESTION.Validations.is_published.required'), undefined, constants.VALIDATION_SERVER_ERR);
             }
+        }
+        if (checkImageSize(req.files.image) === false) {
+            return helper.createResponse(res, res.__('QUESTION.Validations.image.size'), undefined, constants.VALIDATION_SERVER_ERR);
+        } else if (checkImageType(req.files.image) === false) {
+            return helper.createResponse(res, res.__('QUESTION.Validations.image.type'), undefined, constants.VALIDATION_SERVER_ERR);
         }
 
         next();

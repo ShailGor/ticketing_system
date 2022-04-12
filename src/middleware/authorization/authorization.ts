@@ -41,9 +41,9 @@ export const authentication = async function (req: customRequest, res: Response,
         next();
     } catch (e: any) {
         if (e.name == 'TokenExpiredError') {
-            return helper.createResponse(res, res.__('JWT_TOKEN.expired'), undefined, constants.VALIDATION_SERVER_ERR);
+            return helper.createResponse(res, res.__('JWT_TOKEN.expired'), undefined, constants.UNAUTHORIZED);
         } else if (e.name == 'JsonWebTokenError') {
-            return helper.createResponse(res, res.__('JWT_TOKEN.invalid'), undefined, constants.VALIDATION_SERVER_ERR);
+            return helper.createResponse(res, res.__('JWT_TOKEN.invalid'), undefined, constants.UNAUTHORIZED);
         } else {
             console.log(e);
             logger.error(__filename, req.method, undefined, e.message, undefined);

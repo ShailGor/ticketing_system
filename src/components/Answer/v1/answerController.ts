@@ -1,14 +1,18 @@
 import { Request, Response } from 'express';
 import path from 'path';
+import { Op } from 'sequelize';
 import { customRequest } from '../../../environment';
 import S3 from '../../../utils/aws';
 import constants from '../../../utils/constants';
 import { sequelize } from '../../../utils/dbConfig/dbConfig';
 import helper from '../../../utils/helper';
 import logger from '../../../utils/logger';
+import voteModel from '../../Votes/model';
 import answerModel from '../model';
 import { answerInterface } from '../types/answerTyes';
 import * as answerHelper from './answerHelper';
+
+const answerAttributes = ['uuid', 'answer', 'is_accepted', 'answer_image', 'created_at', 'updated_at'];
 
 export const list = async (req: Request, res: Response) => {
     try {
@@ -27,7 +31,7 @@ export const list = async (req: Request, res: Response) => {
 
         let startPage = (page - 1) * recordsPerPage;
 
-        const { count, rows } = await answerModel.getMany(startPage, recordsPerPage, condition, orderBy);
+        const { count, rows } = await answerModel.getMany(startPage, recordsPerPage, condition, orderBy, answerAttributes);
 
         return helper.pagination(page, recordsPerPage, count, rows, sortField, orderBy, res);
     } catch (e) {
@@ -39,10 +43,20 @@ export const list = async (req: Request, res: Response) => {
 export const getAnswer = async (req: Request, res: Response) => {
     let questionUuid: string = req.params.uuid;
     try {
-        const Data = await answerModel.getOne({
-            uuid: questionUuid,
+        const Data: any = await answerModel.getOne(
+            {
+                uuid: questionUuid,
+            },
+            answerAttributes
+        );
+
+        Data.dataValues.upVote = await voteModel.countVote({
+            [Op.and]: [{ answer_id: Data.id }, { vote: true }],
         });
-        console.log(Data);
+        Data.dataValues.downVote = await voteModel.countVote({
+            [Op.and]: [{ answer_id: Data.id }, { vote: false }],
+        });
+        // console.log(Data);
 
         if (Data) {
             return helper.createResponse(res, res.__('QUESTION.List'), Data, constants.SUCCESS);

@@ -5,6 +5,6 @@ export const client = createClient();
 
 export default async () => {
     await client.connect();
-    console.log('Redis client Connected!');
-    // logger.info(__filename, '', '', `Redis client Connected!`, ``);
+    // console.log('Redis client Connected!');
+    logger.info(__filename, 'Redis', '', `Redis client Connected!`, ``);
 };

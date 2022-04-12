@@ -6,6 +6,7 @@ import { Question } from '../../Question/schema/questionSchema';
 import { Answer } from '../../Answer/schema/answerSchema';
 import { Skill } from './skillSchema';
 import { UserSkills } from './userSkillsSchema';
+import Vote from '../../Votes/schema';
 
 export class User extends Model {
     public id!: number;
@@ -133,7 +134,6 @@ User.hasMany(Question, {
     foreignKey: 'user_id',
     sourceKey: 'id',
 });
-
 Question.belongsTo(User, {
     foreignKey: 'user_id',
     as: 'user',
@@ -145,8 +145,18 @@ User.hasMany(Answer, {
     foreignKey: 'user_id',
     sourceKey: 'id',
 });
-
 Answer.belongsTo(User, {
+    foreignKey: 'user_id',
+    as: 'user',
+    targetKey: 'id',
+});
+
+// one user can give many votes
+User.hasMany(Vote, {
+    foreignKey: 'user_id',
+    sourceKey: 'id',
+});
+Vote.belongsTo(User, {
     foreignKey: 'user_id',
     as: 'user',
     targetKey: 'id',

@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../../../utils/dbConfig';
 import { Answer } from '../../Answer/schema/answerSchema';
+import Vote from '../../Votes/schema';
 import { QuestionTags } from './questionTagsSchema';
 import { Tag } from './tagSchema';
 
@@ -99,6 +100,18 @@ Question.hasMany(Answer, {
 });
 
 Answer.belongsTo(Question, {
+    foreignKey: 'question_id',
+    as: 'question',
+    targetKey: 'id',
+});
+
+// one question has many votes
+Question.hasMany(Vote, {
+    foreignKey: 'question_id',
+    sourceKey: 'id',
+});
+
+Vote.belongsTo(Question, {
     foreignKey: 'question_id',
     as: 'question',
     targetKey: 'id',

@@ -111,6 +111,10 @@
             },
             "is_published": {
                 "required": "please provide question published or draft"
+            },
+            "image": {
+                "size": "Image is not greater than 5MB",
+                "type": "Image must be in jpg/jpeg/png"
             }
         }
     },
@@ -123,7 +127,15 @@
             "answer": {
                 "required": "please give answer",
                 "valid": "please enter answer in string"
+            },
+            "answer_image": {
+                "size": "Image is not greater than 5MB",
+                "type": "Image must be in jpg/jpeg/png"
             }
         }
+    },
+    "VOTE": {
+        "List": "All Vote list:",
+        "created": "Vote added successfully..."
     }
 }

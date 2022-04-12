@@ -31,7 +31,7 @@ export async function getMany(page: number, recordsPerPage: number, condition: a
 
 export async function getOne(condition: any = {}, attributes: string[] = [], other: object = {}): Promise<false | Question | null> {
     try {
-        return await Question.findOne({
+        let Data = await Question.findOne({
             where: condition,
             attributes: attributes.length > 0 ? attributes : undefined,
             include: [
@@ -49,6 +49,7 @@ export async function getOne(condition: any = {}, attributes: string[] = [], oth
             ],
             ...other,
         });
+        return Data;
     } catch (error) {
         console.log(error);
         return false;
@@ -57,7 +58,7 @@ export async function getOne(condition: any = {}, attributes: string[] = [], oth
 
 export async function addQuestion(data: any, transaction: Transaction | undefined = undefined): Promise<Question | boolean> {
     try {
-        console.log('data: ', data);
+        // console.log('data: ', data);
 
         let insertedObj: any = await Question.create(data, {
             include: {

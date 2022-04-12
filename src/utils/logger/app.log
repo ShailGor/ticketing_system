@@ -5,3 +5,15 @@
 {"level":"info","message":"v1/userController.js, ~ POST, d5a7c9f9-b97e-41b4-8a3f-40e92065f581 - Login successfully.., eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZDVhN2M5ZjktYjk3ZS00MWI0LThhM2YtNDBlOTIwNjVmNTgxIiwiaWF0IjoxNjQ5MzMyNDg0LCJleHAiOjE2NDkzMzk2ODR9.-4eKe-92PDtiTfVCGYfj2hwQpPZdOUFE0cx7LJRk1wA"}
 {"level":"info","message":"v1/userController.js, ~ POST, d5a7c9f9-b97e-41b4-8a3f-40e92065f581 - Login successfully.., eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZDVhN2M5ZjktYjk3ZS00MWI0LThhM2YtNDBlOTIwNjVmNTgxIiwiaWF0IjoxNjQ5MzkxNTU4LCJleHAiOjE2NDkzOTg3NTh9.sYGI8zqoT5vpgKCM5KScT3v1DutjUQdYtksWbaPx1VQ"}
 {"level":"info","message":"v1/userController.js, ~ POST, d5a7c9f9-b97e-41b4-8a3f-40e92065f581 - Login successfully.., eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZDVhN2M5ZjktYjk3ZS00MWI0LThhM2YtNDBlOTIwNjVmNTgxIiwiaWF0IjoxNjQ5NDAwNjM0LCJleHAiOjE2NDk0MDc4MzR9.d6FIb68q1nKIfjRKM-7k4fzVIev_OubtUf8LWc6AYCw"}
+{"level":"info","message":"v1/userController.js, ~ POST, d5a7c9f9-b97e-41b4-8a3f-40e92065f581 - Login successfully.., eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZDVhN2M5ZjktYjk3ZS00MWI0LThhM2YtNDBlOTIwNjVmNTgxIiwiaWF0IjoxNjQ5NjY1NjM3LCJleHAiOjE2NDk2NzI4Mzd9.IrcGtMa-YwGmeoT4hjHAxRs1LEcwajK_VFkTXnJIhEE"}
+{"level":"error","message":"v1/questionController.js, ~ details, e8c59a2f-3453-42cb-8f5d-a8e4c4627918 - details , SyntaxError: Unexpected token o in JSON at position 1"}
+{"level":"error","message":"v1/questionController.js, ~ details, e8c59a2f-3453-42cb-8f5d-a8e4c4627918 - details , SyntaxError: Unexpected token o in JSON at position 1"}
+{"level":"error","message":"v1/questionController.js, ~ details, e8c59a2f-3453-42cb-8f5d-a8e4c4627918 - details , TypeError: Cannot read properties of undefined (reading 'vote')"}
+{"level":"error","message":"v1/questionController.js, ~ details, e8c59a2f-3453-42cb-8f5d-a8e4c4627918 - details , TypeError: Cannot set properties of undefined (setting 'vote')"}
+{"level":"error","message":"v1/questionController.js, ~ details, e8c59a2f-3453-42cb-8f5d-a8e4c4627918 - details , TypeError: Cannot set properties of undefined (setting 'vote')"}
+{"level":"error","message":"v1/questionController.js, ~ details, e8c59a2f-3453-42cb-8f5d-a8e4c4627918 - details , TypeError: Cannot set properties of undefined (setting 'vote')"}
+{"level":"error","message":"v1/questionController.js, ~ details, e8c59a2f-3453-42cb-8f5d-a8e4c4627918 - details , TypeError: Cannot set properties of undefined (setting 'vote')"}
+{"level":"error","message":"v1/questionController.js, ~ details, e8c59a2f-3453-42cb-8f5d-a8e4c4627918 - details , TypeError: Cannot set properties of undefined (setting 'vote')"}
+{"level":"error","message":"v1/questionController.js, ~ List, undefined - List , TypeError: Cannot set properties of undefined (setting 'vote')"}
+{"level":"error","message":"v1/questionController.js, ~ List, undefined - List , TypeError: Cannot set properties of undefined (setting 'vote')"}
+{"level":"error","message":"v1/questionController.js, ~ details, 564d5a79-1f27-433e-a6b8-d85cb301f794 - details , TypeError: Cannot read properties of null (reading 'dataValues')"}

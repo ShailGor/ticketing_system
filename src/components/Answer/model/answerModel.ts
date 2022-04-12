@@ -77,10 +77,10 @@ export async function addAns(data: any, transaction: Transaction | undefined = u
     }
 }
 
-export async function updateAns(data: answerInterface, bookUuid: string, transaction: Transaction | undefined = undefined): Promise<any | boolean> {
+export async function updateAns(data: answerInterface, Uuid: string, transaction: Transaction | undefined = undefined): Promise<any | boolean> {
     try {
         let updateObj = await Answer.update(data, {
-            where: { uuid: bookUuid },
+            where: { uuid: Uuid },
             transaction: transaction ? transaction : undefined,
         });
         return updateObj;
@@ -89,10 +89,10 @@ export async function updateAns(data: answerInterface, bookUuid: string, transac
     }
 }
 
-export async function deleteAns(bookUuid: string, transaction: Transaction | undefined = undefined): Promise<any | boolean> {
+export async function deleteAns(Uuid: string, transaction: Transaction | undefined = undefined): Promise<any | boolean> {
     try {
         let deleteData = await Answer.destroy({
-            where: { uuid: bookUuid },
+            where: { uuid: Uuid },
             transaction: transaction ? transaction : undefined,
         });
         return deleteData;

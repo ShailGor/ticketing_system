@@ -1,16 +1,18 @@
 import { Request, Response } from 'express';
 import path from 'path';
+import { Op } from 'sequelize';
 import { customRequest } from '../../../environment';
 import S3 from '../../../utils/aws';
 import constants from '../../../utils/constants';
 import { sequelize } from '../../../utils/dbConfig/dbConfig';
 import helper from '../../../utils/helper';
 import logger from '../../../utils/logger';
+import voteModel from '../../Votes/model';
 import questionModel from '../model';
 import { associateInterface, questionInterface } from '../types/questionTypes';
 import * as questionHelper from './questionHelper';
 
-const questionAttributes = ['id', 'uuid', 'user_id', 'title', 'description', 'is_published', 'image', 'created_at', 'updated_at', 'deleted_at'];
+const questionAttributes = ['id', 'uuid', 'title', 'description', 'is_published', 'image', 'created_at', 'updated_at', 'deleted_at'];
 
 export const list = async (req: Request, res: Response) => {
     try {
@@ -29,7 +31,7 @@ export const list = async (req: Request, res: Response) => {
 
         let startPage = (page - 1) * recordsPerPage;
 
-        const { count, rows } = await questionModel.getMany(startPage, recordsPerPage, condition, orderBy, questionAttributes);
+        const { count, rows }: any = await questionModel.getMany(startPage, recordsPerPage, condition, orderBy, questionAttributes);
 
         return helper.pagination(page, recordsPerPage, count, rows, sortField, orderBy, res);
     } catch (e) {
@@ -41,20 +43,32 @@ export const list = async (req: Request, res: Response) => {
 export const getQuestion = async (req: Request, res: Response) => {
     let questionUuid: string = req.params.uuid;
     try {
-        const Data = await questionModel.getOne(
+        const Data: any = await questionModel.getOne(
             {
                 uuid: questionUuid,
             },
             questionAttributes
         );
-        console.log(Data);
+
+        // const obj = JSON.parse(Data);
+
+        Data.dataValues.upVote = await voteModel.countVote({
+            [Op.and]: [{ question_id: Data.id }, { vote: true }],
+        });
+        Data.dataValues.downVote = await voteModel.countVote({
+            [Op.and]: [{ question_id: Data.id }, { vote: false }],
+        });
+        // console.log(Data.dataValues);
 
         if (Data) {
+            logger.info(__filename, 'details', questionUuid, 'details ', res.__('QUESTION.List'));
             return helper.createResponse(res, res.__('QUESTION.List'), Data, constants.SUCCESS);
         } else {
             return helper.createResponse(res, res.__('NOT_FOUND'), undefined, constants.NOT_FOUND_ERR);
         }
     } catch (e: any) {
+        console.log(e);
+
         logger.error(__filename, 'details', questionUuid, 'details ', e);
         return helper.createResponse(res, res.__('INTERNAL_SERVER_ERR'), undefined, constants.INTERNAL_SERVER_ERR);
     }
@@ -77,7 +91,7 @@ export const addQuestion = async (req: customRequest, res: Response) => {
         body.questionTags = tags_array.map((t_id: number) => {
             return { tag_id: t_id };
         });
-        console.log(body.questionTags);
+        // console.log(body.questionTags);
 
         let image = req.files.image ? req.files.image : null;
 
@@ -91,13 +105,13 @@ export const addQuestion = async (req: customRequest, res: Response) => {
 
             body.image = imageName;
         }
-        console.log(body);
+        // console.log(body);
 
         transaction = await sequelize.transaction();
         let addQuestion: any = await questionModel.addQuestion(body);
         await transaction.commit();
 
-        console.log(addQuestion);
+        // console.log(addQuestion);
 
         return helper.createResponse(res, res.__('QUESTION.created'), addQuestion, constants.SUCCESS);
     } catch (e: any) {

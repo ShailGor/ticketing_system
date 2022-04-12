@@ -43,7 +43,7 @@ class UserValidations {
         if (checkImageSize(req.files.coverimage) === false) {
             return helper.createResponse(res, res.__('USER.Validations.profile_image.size'), undefined, constants.VALIDATION_SERVER_ERR);
         } else if (checkImageType(req.files.coverimage) === false) {
-            return helper.createResponse(res, res.__('USER.Validations.profile_image.size'), undefined, constants.VALIDATION_SERVER_ERR);
+            return helper.createResponse(res, res.__('USER.Validations.profile_image.type'), undefined, constants.VALIDATION_SERVER_ERR);
         }
         next();
     }
@@ -80,6 +80,11 @@ class UserValidations {
             if (!parseInt(phone_number) || isEmpty(phone_number)) {
                 return helper.createResponse(res, res.__('USER.Validations.phone_number.valid'), undefined, constants.VALIDATION_SERVER_ERR);
             }
+        }
+        if (checkImageSize(req.files.coverimage) === false) {
+            return helper.createResponse(res, res.__('USER.Validations.profile_image.size'), undefined, constants.VALIDATION_SERVER_ERR);
+        } else if (checkImageType(req.files.coverimage) === false) {
+            return helper.createResponse(res, res.__('USER.Validations.profile_image.type'), undefined, constants.VALIDATION_SERVER_ERR);
         }
         next();
     }
