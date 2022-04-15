@@ -1,5 +1,4 @@
 import sgMail from '@sendgrid/mail';
-import jwt from 'jsonwebtoken';
 import { Op } from 'sequelize';
 
 // Sendgrid to send email
@@ -13,8 +12,10 @@ export async function sendEmail(email: string, emailToken: string | undefined, o
                 subject: 'Email verification',
                 text: 'please verify your account',
                 html: `<h1>Account Verification</h1>
-                       <p>please click below to verify your account</p>
-                       <a href = "http://localhost:3000/user/email-verification/${emailToken}" target="_blank" >click here</a>`,
+                       <p>Please click below link to complete your Email Verification</p>
+                       <a href = "http://localhost:3000/user/email-verification/${emailToken}" target="_blank" 
+                       onMouseOver="this.style.color='#0F0'"
+                       onMouseOut="this.style.color='#00F'" >click here</a>`,
             };
             // console.log(msg);
             return await sgMail.send(msg);
@@ -33,19 +34,6 @@ export async function sendEmail(email: string, emailToken: string | undefined, o
     } catch (error: any) {
         throw error;
     }
-}
-
-export async function jwtToken(uuid: string) {
-    let token: any = jwt.sign(
-        {
-            uuid: uuid,
-        },
-        process.env.JWT_SECRET_KEY as string,
-        {
-            expiresIn: '2h',
-        }
-    );
-    return token;
 }
 
 export function generateOtp() {

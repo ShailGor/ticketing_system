@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import middleware from './middleware';
 import routes from './routes';
+import logger from './utils/logger';
 
 const app: express.Application = express();
 
@@ -12,7 +13,7 @@ app.get('/health', (req: Request, res: Response) => {
 });
 
 app.all('/*', (req: Request, res: Response) => {
-    // logger.info(__filename, req.method, undefined, 'Bad Request', undefined);
+    logger.info(__filename, 'Invalid Route Handler', undefined, 'Bad Request', undefined);
     return res.status(400).json({
         status: 400,
         message: 'Bad Request',

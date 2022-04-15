@@ -22,7 +22,7 @@ export async function getMany(page: number, recordsPerPage: number, condition: a
                     {
                         model: User,
                         as: 'user',
-                        attributes: ['display_name', 'email'],
+                        attributes: ['display_name', 'email', 'uuid'],
                     },
                 ],
             },
@@ -32,6 +32,24 @@ export async function getMany(page: number, recordsPerPage: number, condition: a
         limit: recordsPerPage,
     });
     return { count, rows };
+}
+
+export async function getAll(condition: any = {}, attributes: string[] = []): Promise<Answer[] | false> {
+    try {
+        return await Answer.findAll({
+            where: condition,
+            attributes: attributes,
+            include: [
+                {
+                    model: User,
+                    as: 'user',
+                    attributes: ['display_name', 'email'],
+                },
+            ],
+        });
+    } catch (e) {
+        return false;
+    }
 }
 
 export async function getOne(condition: any = {}, attributes: string[] = [], other: object = {}): Promise<false | Answer | null> {

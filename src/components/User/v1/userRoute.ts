@@ -45,7 +45,7 @@ router.post('/resetPassword', [Validations.resetPassword], (req: Request, res: R
     userController.resetPassword(req, res);
 });
 
-router.post('/logout', authentication, (req: Request, res: Response) => {
+router.post('/logout', [authentication], (req: Request, res: Response) => {
     userController.logout(req, res);
 });
 

@@ -1,31 +1,41 @@
 import { Op, Transaction } from 'sequelize';
+import scoreModel from '../../Score/model';
 import { User } from '../schema';
 import { Skill } from '../schema/skillSchema';
 import { userSkill } from '../schema/userSchema';
 import { userInterface } from '../types/userTypes';
 
 export async function getMany(page: number, recordsPerPage: number, condition: any, order: any, attributes: string[] = []) {
-    let { count, rows } = await User.findAndCountAll({
-        attributes: attributes.length > 0 ? attributes : undefined,
-        where: condition,
-        include: [
-            {
-                model: Skill,
-                as: 'skills',
-                attributes: ['skill'],
-                through: { attributes: [] },
-            },
-        ],
-        order: order,
-        offset: page,
-        limit: recordsPerPage,
-    });
-    return { count, rows };
+    try {
+        let { count, rows }: any = await User.findAndCountAll({
+            attributes: attributes.length > 0 ? attributes : undefined,
+            where: condition,
+            include: [
+                {
+                    model: Skill,
+                    as: 'skills',
+                    attributes: ['skill'],
+                    through: { attributes: [] },
+                },
+            ],
+            order: order,
+            offset: page,
+            limit: recordsPerPage,
+        });
+        // For show total reputation of every User
+        // for (let i = 0; i < rows.length; i++) {
+        //     rows[i].dataValues.reputation = await scoreModel.totalScore({ user_id: rows[i].id });
+        // }
+
+        return { count, rows };
+    } catch (e) {
+        return false;
+    }
 }
 
 export async function getOne(condition: any = {}, attributes: string[] = [], other: object = {}): Promise<false | User | null> {
     try {
-        return await User.findOne({
+        let Data: any = await User.findOne({
             where: condition,
             attributes: attributes.length > 0 ? attributes : undefined,
             include: [
@@ -38,6 +48,11 @@ export async function getOne(condition: any = {}, attributes: string[] = [], oth
             ],
             ...other,
         });
+        // For show total reputation of User
+        // Data.dataValues.reputation = await scoreModel.totalScore({ user_id: Data.id });
+        // console.log(Data);
+
+        return Data;
     } catch (error) {
         console.log(error);
         return false;
@@ -59,10 +74,10 @@ export async function createUser(data: any): Promise<User | boolean> {
     }
 }
 
-export async function updateUser(data: userInterface, Uuid: string): Promise<any | boolean> {
+export async function updateUser(data: userInterface, condition: any = {}): Promise<any | boolean> {
     try {
         let updateObj = await User.update(data, {
-            where: { uuid: Uuid },
+            where: condition,
         });
         return updateObj;
     } catch (e) {

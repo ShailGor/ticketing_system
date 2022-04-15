@@ -1,11 +1,7 @@
 import { Response } from 'express';
+import jwt from 'jsonwebtoken';
 
-export function createResponse(
-    res: Response,
-    message: string,
-    Data: any,
-    status: number | undefined
-) {
+export function createResponse(res: Response, message: string, Data: any, status: number | undefined) {
     let response_status: {
         status: number | undefined;
         message: string;
@@ -43,10 +39,19 @@ export function pagination(
 
 export const getDefaultSortOrder = (sortOrder: string): string => {
     const order: string =
-        sortOrder && ['asc', 'desc'].indexOf(sortOrder.toLowerCase()) !== -1
-            ? sortOrder.toLowerCase() === 'asc'
-                ? 'ASC'
-                : 'DESC'
-            : 'DESC';
+        sortOrder && ['asc', 'desc'].indexOf(sortOrder.toLowerCase()) !== -1 ? (sortOrder.toLowerCase() === 'asc' ? 'ASC' : 'DESC') : 'DESC';
     return order;
 };
+
+export async function jwtToken(uuid: string) {
+    let token: any = jwt.sign(
+        {
+            uuid: uuid,
+        },
+        process.env.JWT_SECRET_KEY as string,
+        {
+            expiresIn: '2h',
+        }
+    );
+    return token;
+}

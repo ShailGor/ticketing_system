@@ -7,6 +7,7 @@ import { Answer } from '../../Answer/schema/answerSchema';
 import { Skill } from './skillSchema';
 import { UserSkills } from './userSkillsSchema';
 import Vote from '../../Votes/schema';
+import Score from '../../Score/schema';
 
 export class User extends Model {
     public id!: number;
@@ -84,12 +85,6 @@ User.init(
                 return (process.env.AWS_IMAGE_URL as string) + imageUrl;
             },
         },
-        // created_at: {
-        //     type: DataTypes.DATE(),
-        // },
-        // updated_at: {
-        //     type: DataTypes.DATE(),
-        // },
     },
     {
         sequelize,
@@ -157,6 +152,17 @@ User.hasMany(Vote, {
     sourceKey: 'id',
 });
 Vote.belongsTo(User, {
+    foreignKey: 'user_id',
+    as: 'user',
+    targetKey: 'id',
+});
+
+// one user has many scores
+User.hasMany(Score, {
+    foreignKey: 'user_id',
+    sourceKey: 'id',
+});
+Score.belongsTo(User, {
     foreignKey: 'user_id',
     as: 'user',
     targetKey: 'id',

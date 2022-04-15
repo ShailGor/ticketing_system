@@ -4,6 +4,8 @@ import constants from '../../../utils/constants';
 import sequelize from '../../../utils/dbConfig';
 import helper from '../../../utils/helper';
 import logger from '../../../utils/logger';
+import scoreModel from '../../Score/model';
+import userModel from '../../User/model';
 import voteModel from '../model';
 
 export const list = async (req: Request, res: Response) => {
@@ -50,11 +52,34 @@ export const add = async (req: customRequest, res: Response) => {
             vote: vote,
         };
 
+        if (vote == 'true') {
+            // console.log(typeof vote);
+            let addScore = await scoreModel.addScore({
+                user_id: user_id,
+                reputation: 5,
+                criteria: 'upVote',
+            });
+            // console.log(addScore);
+        } else if (vote == 'false') {
+            let addScore = await scoreModel.addScore({
+                user_id: user_id,
+                reputation: -1,
+                criteria: 'downVote',
+            });
+        }
+
+        let totalScore = await scoreModel.totalScore({ user_id: user_id });
+
+        // TODO
+        /* if (totalScore >= 100) {
+            await userModel.updateUser({ is_moderator: true }, { id: user_id });
+        } */
+
         transaction = await sequelize.transaction();
-        let addQuestion: any = await voteModel.addVote(body);
+        let addVote: any = await voteModel.addVote(body);
         await transaction.commit();
 
-        return helper.createResponse(res, res.__('VOTE.created'), addQuestion, constants.SUCCESS);
+        return helper.createResponse(res, res.__('VOTE.created'), addVote, constants.SUCCESS);
     } catch (e: any) {
         if (transaction) await transaction.rollback();
         logger.error(__filename, 'addAnswer', undefined, 'Error During add new Answer : ', e);

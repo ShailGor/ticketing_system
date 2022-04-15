@@ -8,6 +8,8 @@ import constants from '../../utils/constants';
 import userModel from '../../components/User/model';
 import logger from '../../utils/logger';
 import helper from '../../utils/helper';
+import adminModel from '../../components/Admin/model';
+import { client } from '../../utils/Redis';
 
 /**
  * @description Route Authorization for status check
@@ -26,17 +28,26 @@ export const authentication = async function (req: customRequest, res: Response,
         let jwtToken: any = jwt.verify(token, process.env.JWT_SECRET_KEY as string);
         let uuid: string = jwtToken.uuid;
         // console.log(jwtToken);
-        let verify_uuid = await userModel.getOne(
+
+        let verify_token = await client.hGet(uuid, 'jwt_token');
+        if (!verify_token) {
+            return helper.createResponse(res, res.__('JWT_TOKEN.not_matched'), undefined, constants.UNAUTHORIZED);
+        }
+
+        let admin_uuid: any = await adminModel.getOne({ uuid: uuid }, ['uuid']);
+
+        let verify_uuid: any = await userModel.getOne(
             {
                 uuid: uuid,
             },
             ['uuid']
         );
-        if (!verify_uuid) {
+        if (!verify_uuid && !admin_uuid) {
             return helper.createResponse(res, res.__('JWT_TOKEN.not_found'), undefined, constants.VALIDATION_SERVER_ERR);
         }
         req.custom = {};
-        req.custom.uuid = uuid;
+        req.custom.uuid = verify_uuid?.uuid;
+        req.custom.adminUuid = admin_uuid?.uuid;
 
         next();
     } catch (e: any) {

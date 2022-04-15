@@ -4,9 +4,21 @@
     "PAGE": "Enter correct page",
     "JWT_TOKEN": {
         "Apply": "please apply token",
+        "not_matched": "You loged out please login again",
         "not_found": "Since you have no token please login again",
         "expired": "Your session is expired please login again!",
         "invalid": "Token is invalid"
+    },
+    "LOGIN": {
+        "success": "Login successfully..",
+        "pwd-wrong": "Your password is wrong",
+        "user_not_found": "user account is not found!",
+        "verify": "please verify your email",
+        "already": "You are already login in your account"
+    },
+    "LOGOUT": {
+        "logout":"Logout successfully..",
+        "login": "first, You login into your account"
     },
     "USER": {
         "List": "User's Data is:",
@@ -16,27 +28,29 @@
         "Validations": {
             "first_name": {
                 "required": "Users's First Name is required",
-                "valid": "Users's First Name must be string and cannot null"
+                "valid": "Users's First Name must be valid"
             },
             "last_name": {
                 "required": "Users's Last Name is required",
-                "valid": "User Last Name must be string and cannot null"
+                "valid": "User Last Name must be valid"
             },
             "display_name": {
                 "required": "User's display name is required",
-                "valid": "User display name must be string and cannot null"
+                "valid": "User display name must be valid"
             },
             "email": {
                 "required": "User's Email is required",
-                "valid": "User's Email must be in correct format(abc@gmail.com) and cannot null"
+                "valid": "User's Email cannot null",
+                "correct": "Email must be in correct format(abc@gmail.com)"
             },
             "password": {
                 "required": "Password is required",
-                "valid": "Password cannot null"
+                "valid": "Password cannot null",
+                "length": "Password length must be greater than 8 characters. "
             },
             "phone_number": {
                 "required": "User's phone_number is required",
-                "valid": "User phone_number must be number and cannot null"
+                "valid": "User phone_number must be valid"
             },
             "profile_image": {
                 "size": "Image is not greater than 5MB",
@@ -66,16 +80,6 @@
             "alreadyVerify": "Your email is already verified",
             "expired": "Oops! Your email verification link is expired"
         },
-        "login": {
-            "success": "Login successfully..",
-            "pwd-wrong": "Your password is wrong",
-            "user_not_found": "user account is not found!",
-            "verify": "please verify your email"
-        },
-        "Logout": {
-            "logout":"Logout successfully..",
-            "login": "first, You login into your account"
-        },
         "Forgot": {
             "otpSent": "OTP sent to your email",
             "user_not_found":"user account is not found!"
@@ -100,6 +104,7 @@
         "created": "Question added successfully...",
         "updated": "Question Updated successfully...",
         "deleted": "Question Deleted successfully...",
+        "not_access": "You have not access to edit This Question",
         "Validations": {
             "title": {
                 "required": "Question Title is required",
@@ -123,6 +128,7 @@
         "created": "Answer added successfully...",
         "updated": "Answer Updated successfully...",
         "deleted": "Answer Deleted successfully...",
+        "not_access": "You have not access to edit This Answer",
         "Validations": {
             "answer": {
                 "required": "please give answer",

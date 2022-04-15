@@ -2,7 +2,7 @@ import { NextFunction, Response } from 'express';
 import { customRequest } from '../../../environment';
 import constants from '../../../utils/constants';
 import helper from '../../../utils/helper';
-import { checkImageSize, checkImageType, isEmpty } from '../../../utils/validator/customValidations';
+import { checkImageSize, checkImageType, isEmail, isEmpty } from '../../../utils/validator/customValidations';
 import { userInterface } from '../types/userTypes';
 import isLength from 'validator/lib/isLength';
 
@@ -29,11 +29,15 @@ class UserValidations {
             return helper.createResponse(res, res.__('USER.Validations.email.required'), undefined, constants.VALIDATION_SERVER_ERR);
         } else if (parseInt(email) || isEmpty(email)) {
             return helper.createResponse(res, res.__('USER.Validations.email.valid'), undefined, constants.VALIDATION_SERVER_ERR);
+        } else if (!isEmail(email)) {
+            return helper.createResponse(res, res.__('USER.Validations.email.correct'), undefined, constants.VALIDATION_SERVER_ERR);
         }
         if (!password) {
             return helper.createResponse(res, res.__('USER.Validations.password.required'), undefined, constants.VALIDATION_SERVER_ERR);
-        } else if (parseInt(password) || isLength(password, { min: 8, max: 16 }) || isEmpty(password)) {
+        } else if (parseInt(password) || isEmpty(password)) {
             return helper.createResponse(res, res.__('USER.Validations.password.valid'), undefined, constants.VALIDATION_SERVER_ERR);
+        } else if (!isLength(password, { min: 8, max: 16 })) {
+            return helper.createResponse(res, res.__('USER.Validations.password.length'), undefined, constants.VALIDATION_SERVER_ERR);
         }
         if (!phone_number) {
             return helper.createResponse(res, res.__('USER.Validations.phone_number.required'), undefined, constants.VALIDATION_SERVER_ERR);
@@ -69,10 +73,12 @@ class UserValidations {
         if (req.body.email) {
             if (parseInt(email) || isEmpty(email)) {
                 return helper.createResponse(res, res.__('USER.Validations.email.valid'), undefined, constants.VALIDATION_SERVER_ERR);
+            } else if (!isEmail(email)) {
+                return helper.createResponse(res, res.__('USER.Validations.email.correct'), undefined, constants.VALIDATION_SERVER_ERR);
             }
         }
         if (req.body.password) {
-            if (parseInt(password) || isLength(password, { min: 8, max: 16 }) || isEmpty(password)) {
+            if (parseInt(password) || !isLength(password, { min: 8, max: 16 }) || isEmpty(password)) {
                 return helper.createResponse(res, res.__('USER.Validations.password.valid'), undefined, constants.VALIDATION_SERVER_ERR);
             }
         }

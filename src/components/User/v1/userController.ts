@@ -12,6 +12,21 @@ import { client } from '../../../utils/Redis';
 import * as userHelper from './userHelper';
 import bcrypt from 'bcrypt';
 import { Op } from 'sequelize';
+import scoreModel from '../../Score/model';
+
+const userAttributes = [
+    'id',
+    'uuid',
+    'first_name',
+    'last_name',
+    'display_name',
+    'email',
+    'is_moderator',
+    'phone_number',
+    'created_at',
+    'updated_at',
+    'deleted_at',
+];
 
 export const list = async (req: Request, res: Response) => {
     try {
@@ -30,7 +45,13 @@ export const list = async (req: Request, res: Response) => {
 
         let startPage = (page - 1) * recordsPerPage;
 
-        const { count, rows } = await userModel.getMany(startPage, recordsPerPage, condition, orderBy);
+        const { count, rows }: any = await userModel.getMany(startPage, recordsPerPage, condition, orderBy, userAttributes);
+        // console.log(rows);
+
+        for (let i = 0; i < rows.length; i++) {
+            rows[i].dataValues.reputation = await scoreModel.totalScore({ user_id: rows[i].id });
+        }
+        // console.log(await scoreModel.getAll(['reputation']));
 
         return helper.pagination(page, recordsPerPage, count, rows, sortField, orderBy, res);
     } catch (e) {
@@ -42,12 +63,17 @@ export const list = async (req: Request, res: Response) => {
 export const getUser = async (req: Request, res: Response) => {
     let userUuid: string = req.params.uuid;
     try {
-        const userData = await userModel.getOne({
-            uuid: userUuid,
-        });
+        const userData: any = await userModel.getOne(
+            {
+                uuid: userUuid,
+            },
+            userAttributes
+        );
 
         if (userData) {
-            return helper.createResponse(res, res.__('User.List'), userData, constants.SUCCESS);
+            userData.dataValues.reputation = await scoreModel.totalScore({ user_id: userData.id });
+
+            return helper.createResponse(res, res.__('USER.List'), userData, constants.SUCCESS);
         } else {
             return helper.createResponse(res, res.__('NOT_FOUND'), undefined, constants.NOT_FOUND_ERR);
         }
@@ -142,7 +168,7 @@ export const userVerification = async function (req: customRequest, res: Respons
         }
     } catch (e: any) {
         console.log(e);
-        logger.error(__filename, 'email_verification', undefined, 'Error During verify email : ', e);
+        logger.error(__filename, 'email_verification', '', 'Error During verify email : ', e);
         return helper.createResponse(res, res.__('INTERNAL_SERVER_ERR'), undefined, constants.INTERNAL_SERVER_ERR);
     }
 };
@@ -153,8 +179,11 @@ export const login = async function (req: customRequest, res: Response) {
         let { email, password }: { email: userInterface; password: string | Buffer } = req.body;
 
         let user: any = await userModel.getOne({ email: email }, ['uuid', 'password', 'is_email_verified']);
-        console.log(user.is_email_verified);
-
+        // console.log(user.is_email_verified);
+        let token = await client.hGet(user.uuid, 'jwt_token');
+        if (token) {
+            return helper.createResponse(res, res.__('LOGIN.already'), undefined, constants.SUCCESS);
+        }
         if (user.is_email_verified == true) {
             if (user) {
                 // console.log(user.password);
@@ -162,20 +191,20 @@ export const login = async function (req: customRequest, res: Response) {
                 let validatePwd = bcrypt.compareSync(password, user.password);
                 // console.log(validatePwd);
                 if (validatePwd) {
-                    let jwtToken: any = await userHelper.jwtToken(user.uuid);
+                    let jwtToken: any = await helper.jwtToken(user.uuid);
 
                     await client.hSet(user.uuid, { jwt_token: jwtToken });
                     await client.expire(user.uuid, 2 * 60 * 60);
 
-                    logger.info(__filename, req.method, user.uuid, res.__('USER.login.success'), jwtToken);
-                    return helper.createResponse(res, res.__('USER.login.success'), jwtToken, constants.SUCCESS);
+                    logger.info(__filename, req.method, user.uuid, res.__('LOGIN.success'), jwtToken);
+                    return helper.createResponse(res, res.__('LOGIN.success'), jwtToken, constants.SUCCESS);
                 } else {
-                    return helper.createResponse(res, res.__('USER.login.pwd-wrong'), undefined, constants.VALIDATION_SERVER_ERR);
+                    return helper.createResponse(res, res.__('LOGIN.pwd-wrong'), undefined, constants.VALIDATION_SERVER_ERR);
                 }
             }
-            return helper.createResponse(res, res.__('USER.login.user_not_found'), undefined, constants.NOT_FOUND_ERR);
+            return helper.createResponse(res, res.__('LOGIN.user_not_found'), undefined, constants.NOT_FOUND_ERR);
         }
-        return helper.createResponse(res, res.__('USER.login.verify'), undefined, constants.NOT_FOUND_ERR);
+        return helper.createResponse(res, res.__('LOGIN.verify'), undefined, constants.NOT_FOUND_ERR);
     } catch (e: any) {
         // console.log(e);
         logger.error(__filename, 'login', undefined, 'Error During login : ', e);
@@ -197,9 +226,9 @@ export const logout = async function (req: customRequest, res: Response) {
         if (verify_token == token) {
             await client.del(uuid);
             logger.info(__filename, 'logout', uuid, `Logout successfully..`, ``);
-            return helper.createResponse(res, res.__('USER.Logout.logout'), undefined, constants.SUCCESS);
+            return helper.createResponse(res, res.__('LOGOUT.logout'), undefined, constants.SUCCESS);
         }
-        return helper.createResponse(res, res.__('USER.Logout.login'), undefined, constants.VALIDATION_SERVER_ERR);
+        return helper.createResponse(res, res.__('LOGOUT.login'), undefined, constants.VALIDATION_SERVER_ERR);
     } catch (e: any) {
         console.log(e);
         logger.error(__filename, 'logout', undefined, 'Error During login : ', e);
@@ -333,7 +362,8 @@ export const updateUser = async (req: customRequest, res: Response) => {
             phone_number: phone_number,
         };
 
-        let image: any = await userModel.getOne({ uuid: userUuid }, ['profile_image']);
+        let image: any = await userModel.getOne({ uuid: userUuid }, ['id', 'profile_image']);
+        // console.log(image.dataValues.reputation);
 
         let profile_image = req.files.profile_image ? req.files.profile_image : image.profile_image;
 
@@ -354,7 +384,7 @@ export const updateUser = async (req: customRequest, res: Response) => {
             body.profile_image = profile_imageName;
         }
 
-        await userModel.updateUser(body, userUuid);
+        await userModel.updateUser(body, { uuid: userUuid });
         let data = await userModel.getOne({ uuid: userUuid });
 
         return helper.createResponse(res, res.__('USER.updated'), data, constants.SUCCESS);
