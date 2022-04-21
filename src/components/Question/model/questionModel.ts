@@ -2,13 +2,22 @@ import { Transaction } from 'sequelize';
 import { User } from '../../User/schema';
 import Question from '../schema';
 import { questionTag } from '../schema/questionSchema';
-import { Tag } from '../schema/tagSchema';
+import Tag from '../../Tags/schema';
 import { associateInterface, questionInterface } from '../types/questionTypes';
+import { Answer } from '../../Answer/schema/answerSchema';
+import sequelize from 'sequelize';
 
-export async function getMany(page: number, recordsPerPage: number, condition: any, order: any, attributes: string[] = []) {
+export async function getMany(page: number, recordsPerPage: number, condition: any, order: any, attributes: string[] = [], other: object = {}) {
     let { count, rows } = await Question.findAndCountAll({
         where: condition,
-        attributes: attributes.length > 0 ? attributes : undefined,
+        attributes: {
+            include: [
+                [sequelize.literal('(SELECT COUNT(vote) FROM votes where votes.question_id = Question.id  and vote = true)'), 'upVote'],
+                [sequelize.literal('(SELECT COUNT(vote) FROM votes where votes.question_id = Question.id  and vote = false)'), 'downVote'],
+            ],
+            exclude: ['id', 'updated_at', 'deleted_at'],
+        },
+        distinct: true,
         include: [
             {
                 model: Tag,
@@ -21,10 +30,22 @@ export async function getMany(page: number, recordsPerPage: number, condition: a
                 as: 'user',
                 attributes: ['display_name', 'email'],
             },
+            {
+                model: Answer,
+                attributes: ['answer', 'answer_image', 'user_id'],
+                include: [
+                    {
+                        model: User,
+                        as: 'user',
+                        attributes: ['display_name', 'email'],
+                    },
+                ],
+            },
         ],
         order: order,
         offset: page,
         limit: recordsPerPage,
+        ...other,
     });
     return { count, rows };
 }
@@ -45,6 +66,17 @@ export async function getOne(condition: any = {}, attributes: string[] = [], oth
                     model: User,
                     as: 'user',
                     attributes: ['display_name', 'email'],
+                },
+                {
+                    model: Answer,
+                    attributes: ['answer', 'answer_image', 'user_id'],
+                    include: [
+                        {
+                            model: User,
+                            as: 'user',
+                            attributes: ['display_name', 'email'],
+                        },
+                    ],
                 },
             ],
             ...other,

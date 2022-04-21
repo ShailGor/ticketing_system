@@ -55,34 +55,34 @@ class UserValidations {
     update(req: customRequest, res: Response, next: NextFunction) {
         let { first_name, last_name, display_name, email, password, phone_number } = req.body;
 
-        if (req.body.first_name) {
+        if (req.body.first_name != null) {
             if (parseInt(first_name) || isEmpty(first_name)) {
                 return helper.createResponse(res, res.__('USER.Validations.first_name.valid'), undefined, constants.VALIDATION_SERVER_ERR);
             }
         }
-        if (req.body.last_name) {
+        if (req.body.last_name != null) {
             if (parseInt(last_name) || isEmpty(last_name)) {
                 return helper.createResponse(res, res.__('USER.Validations.last_name.valid'), undefined, constants.VALIDATION_SERVER_ERR);
             }
         }
-        if (req.body.display_name) {
+        if (req.body.display_name != null) {
             if (parseInt(display_name) || isEmpty(display_name)) {
                 return helper.createResponse(res, res.__('USER.Validations.display_name.valid'), undefined, constants.VALIDATION_SERVER_ERR);
             }
         }
-        if (req.body.email) {
+        if (req.body.email != null) {
             if (parseInt(email) || isEmpty(email)) {
                 return helper.createResponse(res, res.__('USER.Validations.email.valid'), undefined, constants.VALIDATION_SERVER_ERR);
             } else if (!isEmail(email)) {
                 return helper.createResponse(res, res.__('USER.Validations.email.correct'), undefined, constants.VALIDATION_SERVER_ERR);
             }
         }
-        if (req.body.password) {
+        if (req.body.password != null) {
             if (parseInt(password) || !isLength(password, { min: 8, max: 16 }) || isEmpty(password)) {
                 return helper.createResponse(res, res.__('USER.Validations.password.valid'), undefined, constants.VALIDATION_SERVER_ERR);
             }
         }
-        if (req.body.phone_number) {
+        if (req.body.phone_number != null) {
             if (!parseInt(phone_number) || isEmpty(phone_number)) {
                 return helper.createResponse(res, res.__('USER.Validations.phone_number.valid'), undefined, constants.VALIDATION_SERVER_ERR);
             }

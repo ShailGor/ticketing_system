@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <center>
+        <h1>User Details</h1>
+    </center><br><br>
+    <table border="1" bordercolor="#000000" style="background-color:#FFFFFF;text-align:center">
+        <tr>
+            <th width="50px">No</th>
+            <th>User Id</th>
+            <th>User_uuid</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Display Name</th>
+            <th>email Id</th>
+            <th>Mobile Number</th>
+            <th>Reputations</th>
+            <th>is email verify?</th>
+            <th>is moderator?</th>
+            <th>Profile Image</th>
+            <th>createdAt</th>
+            <th>updatedAt</th>
+            <th>deletedAt</th>
+            <th>Skills</th>
+
+        </tr>
+        <% if(userDetails.length){ for(var i=0;i < userDetails.length;i++) { %>
+            <tr>
+                <td>
+                    <%=(i+1)%>
+                </td>
+                <td>
+                    <%=userDetails[i].id%>
+                </td>
+                <td>
+                    <%=userDetails[i].uuid%>
+                </td>
+                <td>
+                    <%=userDetails[i].first_name%>
+                </td>
+                <td>
+                    <%=userDetails[i].last_name%>
+                </td>
+                <td>
+                    <%=userDetails[i].display_name%>
+                </td>
+                <td>
+                    <%=userDetails[i].email%>
+                </td>
+                <td>
+                    <%=userDetails[i].phone_number%>
+                </td>
+                <td>
+                    <%=userDetails[i].dataValues.reputations%>
+                </td>
+                <td>
+                    <%=userDetails[i].is_email_verified%>
+                </td>
+                <td>
+                    <%=userDetails[i].is_moderator%>
+                </td>
+                <td>
+                    <% var myLink=userDetails[i].profile_image%>
+                        <a href=<%=myLink%>> <%=myLink%></a>
+                </td>
+                <td>
+                    <%=userDetails[i].created_at%>
+                </td>
+                <td>
+                    <%=userDetails[i].updated_at%>
+                </td>
+                <td>
+                    <%=userDetails[i].deleted_at%>
+                </td>
+                <td style="padding: 10px;">
+                    <%=userDetails[i].allSkills%>
+                </td>
+            </tr>
+            <% } }else{ %>
+                <tr>
+                    <td colspan="3">No user</td>
+                </tr>
+                <% } %>
+    </table>
+</body>
+</html>

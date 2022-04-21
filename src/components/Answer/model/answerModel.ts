@@ -1,3 +1,4 @@
+import sequelize from 'sequelize';
 import { Transaction } from 'sequelize';
 import Question from '../../Question/schema';
 import { User } from '../../User/schema';
@@ -7,7 +8,14 @@ import { answerInterface } from '../types/answerTyes';
 export async function getMany(page: number, recordsPerPage: number, condition: any, order: any, attributes: string[] = []) {
     let { count, rows } = await Answer.findAndCountAll({
         where: condition,
-        attributes: attributes.length > 0 ? attributes : undefined,
+        attributes: {
+            include: [
+                [sequelize.literal('(SELECT COUNT(vote) FROM votes where votes.answer_id = Answer.id  and vote = true)'), 'upVote'],
+                [sequelize.literal('(SELECT COUNT(vote) FROM votes where votes.answer_id = Answer.id  and vote = false)'), 'downVote'],
+            ],
+            exclude: ['deleted_at'],
+        },
+        distinct: true,
         include: [
             {
                 model: User,

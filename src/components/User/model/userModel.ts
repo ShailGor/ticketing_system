@@ -1,15 +1,28 @@
+import sequelize, { Model } from 'sequelize';
 import { Op, Transaction } from 'sequelize';
 import scoreModel from '../../Score/model';
+import Score from '../../Score/schema';
 import { User } from '../schema';
 import { Skill } from '../schema/skillSchema';
 import { userSkill } from '../schema/userSchema';
 import { userInterface } from '../types/userTypes';
 
-export async function getMany(page: number, recordsPerPage: number, condition: any, order: any, attributes: string[] = []) {
+export async function getMany(
+    page: number | undefined,
+    recordsPerPage: number | undefined,
+    condition: any = {},
+    order: any,
+    attributes: string[] = [],
+    other: object = {}
+) {
     try {
         let { count, rows }: any = await User.findAndCountAll({
-            attributes: attributes.length > 0 ? attributes : undefined,
+            attributes: {
+                include: [[sequelize.literal('(SELECT SUM(reputation) FROM scores where scores.user_id = User.id)'), 'reputations']],
+                exclude: attributes,
+            },
             where: condition,
+            distinct: true,
             include: [
                 {
                     model: Skill,
@@ -19,13 +32,17 @@ export async function getMany(page: number, recordsPerPage: number, condition: a
                 },
             ],
             order: order,
+            // order: [[sequelize.literal('xyz'), 'DESC']],
             offset: page,
             limit: recordsPerPage,
+            ...other,
+            logging: console.log,
         });
         // For show total reputation of every User
         // for (let i = 0; i < rows.length; i++) {
         //     rows[i].dataValues.reputation = await scoreModel.totalScore({ user_id: rows[i].id });
         // }
+        // console.log(rows);
 
         return { count, rows };
     } catch (e) {
@@ -33,11 +50,22 @@ export async function getMany(page: number, recordsPerPage: number, condition: a
     }
 }
 
+// export async function userList(dbQuery: string) {
+//     try {
+//         let Data: any = await sequelizeDb.;
+//     } catch (e) {
+//         return false;
+//     }
+// }
+
 export async function getOne(condition: any = {}, attributes: string[] = [], other: object = {}): Promise<false | User | null> {
     try {
         let Data: any = await User.findOne({
             where: condition,
-            attributes: attributes.length > 0 ? attributes : undefined,
+            attributes: {
+                include: [[sequelize.literal('(SELECT SUM(reputation) FROM scores where scores.user_id = User.id)'), 'reputation']],
+                exclude: ['id', 'created_at', 'updated_at', 'deleted_at'],
+            },
             include: [
                 {
                     model: Skill,

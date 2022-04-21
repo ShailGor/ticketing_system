@@ -4,7 +4,7 @@ import sequelize from '../../../utils/dbConfig';
 import { Answer } from '../../Answer/schema/answerSchema';
 import Vote from '../../Votes/schema';
 import { QuestionTags } from './questionTagsSchema';
-import { Tag } from './tagSchema';
+import Tag from '../../Tags/schema';
 
 export class Question extends Model {
     public id!: number;

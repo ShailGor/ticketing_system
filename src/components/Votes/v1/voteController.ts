@@ -4,6 +4,8 @@ import constants from '../../../utils/constants';
 import sequelize from '../../../utils/dbConfig';
 import helper from '../../../utils/helper';
 import logger from '../../../utils/logger';
+import answerModel from '../../Answer/model';
+import questionModel from '../../Question/model';
 import scoreModel from '../../Score/model';
 import userModel from '../../User/model';
 import voteModel from '../model';
@@ -52,23 +54,33 @@ export const add = async (req: customRequest, res: Response) => {
             vote: vote,
         };
 
+        let user: any;
+
+        if (question_id) {
+            user = await questionModel.getOne({ id: question_id }, ['user_id']); // find Question's user
+            console.log('question User', user.user_id);
+        } else if (answer_id) {
+            user = await answerModel.getOne({ id: answer_id }, ['user_id']); // find Answer's user
+            console.log('answer User', user.user_id);
+        }
+
         if (vote == 'true') {
             // console.log(typeof vote);
             let addScore = await scoreModel.addScore({
-                user_id: user_id,
+                user_id: user.user_id,
                 reputation: 5,
                 criteria: 'upVote',
             });
             // console.log(addScore);
         } else if (vote == 'false') {
             let addScore = await scoreModel.addScore({
-                user_id: user_id,
+                user_id: user.user_id,
                 reputation: -1,
                 criteria: 'downVote',
             });
         }
 
-        let totalScore = await scoreModel.totalScore({ user_id: user_id });
+        let totalScore = await scoreModel.totalScore({ user_id: user.user_id });
 
         // TODO
         /* if (totalScore >= 100) {

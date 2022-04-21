@@ -93,6 +93,11 @@ export function getOrderByfield(search: any, sortOrder: any) {
                         [key]: { [Op.like]: `%${data}%` },
                     });
                     break;
+                case 'reputation':
+                    orderBy = [['reputation', sortOrder]];
+                    sortField = 'reputation';
+                    condition.push({});
+                    break;
             }
         }
     } else {

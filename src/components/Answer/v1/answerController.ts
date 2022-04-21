@@ -34,14 +34,14 @@ export const list = async (req: Request, res: Response) => {
 
         const { count, rows }: any = await answerModel.getMany(startPage, recordsPerPage, condition, orderBy, answerAttributes);
 
-        for (let i = 0; i < rows.length; i++) {
-            rows[i].dataValues.upVote = await voteModel.countVote({
-                [Op.and]: [{ answer_id: rows[i].id }, { vote: true }],
-            });
-            rows[i].dataValues.downVote = await voteModel.countVote({
-                [Op.and]: [{ answer_id: rows[i].id }, { vote: false }],
-            });
-        }
+        // for (let i = 0; i < rows.length; i++) {
+        //     rows[i].dataValues.upVote = await voteModel.countVote({
+        //         [Op.and]: [{ answer_id: rows[i].id }, { vote: true }],
+        //     });
+        //     rows[i].dataValues.downVote = await voteModel.countVote({
+        //         [Op.and]: [{ answer_id: rows[i].id }, { vote: false }],
+        //     });
+        // }
 
         return helper.pagination(page, recordsPerPage, count, rows, sortField, orderBy, res);
     } catch (e) {

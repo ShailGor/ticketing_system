@@ -4,7 +4,7 @@ import { Op } from 'sequelize';
 import { customRequest } from '../../../environment';
 import S3 from '../../../utils/aws';
 import constants from '../../../utils/constants';
-import { sequelize } from '../../../utils/dbConfig/dbConfig';
+import sequelize from '../../../utils/dbConfig';
 import helper from '../../../utils/helper';
 import logger from '../../../utils/logger';
 import adminModel from '../../Admin/model';
@@ -15,7 +15,7 @@ import questionModel from '../model';
 import { associateInterface, questionInterface } from '../types/questionTypes';
 import * as questionHelper from './questionHelper';
 
-const questionAttributes = ['id', 'uuid', 'title', 'description', 'is_published', 'image', 'created_at', 'updated_at', 'deleted_at'];
+const questionAttributes = ['id', 'uuid', 'title', 'description', 'is_published', 'image', 'created_at', 'updated_at'];
 
 export const list = async (req: Request, res: Response) => {
     try {
@@ -36,14 +36,15 @@ export const list = async (req: Request, res: Response) => {
 
         const { count, rows }: any = await questionModel.getMany(startPage, recordsPerPage, condition, orderBy, questionAttributes);
 
-        for (let i = 0; i < rows.length; i++) {
-            rows[i].dataValues.upVote = await voteModel.countVote({
-                [Op.and]: [{ answer_id: rows[i].id }, { vote: true }],
-            });
-            rows[i].dataValues.downVote = await voteModel.countVote({
-                [Op.and]: [{ answer_id: rows[i].id }, { vote: false }],
-            });
-        }
+        // Total Votes given in the question(upVote and downVote)
+        // for (let i = 0; i < rows.length; i++) {
+        //     rows[i].dataValues.upVote = await voteModel.countVote({
+        //         [Op.and]: [{ question_id: rows[i].id }, { vote: true }],
+        //     });
+        //     rows[i].dataValues.downVote = await voteModel.countVote({
+        //         [Op.and]: [{ question_id: rows[i].id }, { vote: false }],
+        //     });
+        // }
 
         return helper.pagination(page, recordsPerPage, count, rows, sortField, orderBy, res);
     } catch (e) {
@@ -62,10 +63,7 @@ export const getQuestion = async (req: Request, res: Response) => {
             questionAttributes
         );
 
-        // const obj = JSON.parse(Data);
-
-        Data.dataValues.Answers = await answerModel.getAll({ question_id: Data.id }, ['answer']);
-
+        // Total Votes given in the question(upVote and downVote)
         Data.dataValues.upVote = await voteModel.countVote({
             [Op.and]: [{ question_id: Data.id }, { vote: true }],
         });

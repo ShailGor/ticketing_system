@@ -4,7 +4,7 @@
     "PAGE": "Enter correct page",
     "JWT_TOKEN": {
         "Apply": "please apply token",
-        "not_matched": "You loged out please login again",
+        "not_matched": "You logged out please login again",
         "not_found": "Since you have no token please login again",
         "expired": "Your session is expired please login again!",
         "invalid": "Token is invalid"
@@ -95,7 +95,7 @@
         },
         "Reset_pwd": {
             "success": "Password updated Successfully...",
-            "verify": "plesae verify OTP first",
+            "verify": "please verify OTP first",
             "incorrect": "Id is incorrect"
         }
     },
@@ -143,5 +143,19 @@
     "VOTE": {
         "List": "All Vote list:",
         "created": "Vote added successfully..."
+    },
+    "ADMIN": {
+        "Reset_pwd": {
+            "success": "Password changed Successfully...",
+            "wrong": "Your Password is wrong",
+            "incorrect": "Id is incorrect"
+        },
+        "Report": {
+            "pdf": "Pdf report created Successfully...",
+            "csv": "Csv file report created Successfully..."
+        },
+        "Tag": {
+            "created":"Tag added successfully..."
+        }
     }
 }

@@ -11,6 +11,17 @@ export async function getOne(condition: any = {}, attributes: string[] = [], oth
     }
 }
 
+export async function updateadmin(data: any, condition: any = {}): Promise<any | boolean> {
+    try {
+        let updateObj = await Admin.update(data, {
+            where: condition,
+        });
+        return updateObj;
+    } catch (e) {
+        return false;
+    }
+}
+
 // let data = async () => {
 //     let data = Admin.create({
 //         first_name: 'Shail',

@@ -14,20 +14,6 @@ import bcrypt from 'bcrypt';
 import { Op } from 'sequelize';
 import scoreModel from '../../Score/model';
 
-const userAttributes = [
-    'id',
-    'uuid',
-    'first_name',
-    'last_name',
-    'display_name',
-    'email',
-    'is_moderator',
-    'phone_number',
-    'created_at',
-    'updated_at',
-    'deleted_at',
-];
-
 export const list = async (req: Request, res: Response) => {
     try {
         let { page, recordsPerPage, sortOrder } = req.body;
@@ -45,13 +31,11 @@ export const list = async (req: Request, res: Response) => {
 
         let startPage = (page - 1) * recordsPerPage;
 
-        const { count, rows }: any = await userModel.getMany(startPage, recordsPerPage, condition, orderBy, userAttributes);
-        // console.log(rows);
+        // let data = await userModel.getAll();
+        const excludeUserAttributes = ['id', 'password', 'updated_at', 'deleted_at'];
 
-        for (let i = 0; i < rows.length; i++) {
-            rows[i].dataValues.reputation = await scoreModel.totalScore({ user_id: rows[i].id });
-        }
-        // console.log(await scoreModel.getAll(['reputation']));
+        const { count, rows }: any = await userModel.getMany(startPage, recordsPerPage, condition, orderBy, excludeUserAttributes);
+        // console.log({ count, rows });
 
         return helper.pagination(page, recordsPerPage, count, rows, sortField, orderBy, res);
     } catch (e) {
@@ -63,15 +47,20 @@ export const list = async (req: Request, res: Response) => {
 export const getUser = async (req: Request, res: Response) => {
     let userUuid: string = req.params.uuid;
     try {
+        const userAttributes = ['id', 'uuid', 'first_name', 'last_name', 'display_name', 'email', 'is_moderator', 'phone_number', 'created_at'];
         const userData: any = await userModel.getOne(
             {
                 uuid: userUuid,
             },
             userAttributes
         );
+        console.log(userData);
 
         if (userData) {
-            userData.dataValues.reputation = await scoreModel.totalScore({ user_id: userData.id });
+            // show the reputation of one user
+            // let reputation = await scoreModel.totalScore({ user_id: userData.id });
+            // userData.dataValues.reputation = reputation ? reputation : 0;
+            // console.log(userData);
 
             return helper.createResponse(res, res.__('USER.List'), userData, constants.SUCCESS);
         } else {
@@ -184,6 +173,8 @@ export const login = async function (req: customRequest, res: Response) {
         if (token) {
             return helper.createResponse(res, res.__('LOGIN.already'), undefined, constants.SUCCESS);
         }
+        console.log(user.is_email_verified);
+
         if (user.is_email_verified == true) {
             if (user) {
                 // console.log(user.password);
@@ -276,10 +267,9 @@ export const verifyOtp = async function (req: customRequest, res: Response) {
             let checkOtp = await client.hGet(checkUuid.uuid, 'otp');
             console.log(checkOtp);
             if (checkOtp == otp) {
-                console.log('hh');
+                // console.log('hh');
 
                 await client.del(checkUuid.uuid);
-                // let update = await authorModel.updateAuthor({ otp: null }, checkUuid.uuid);
                 logger.info(__filename, req.method, uuid, i18n.__('AUTHOR.verifyOtp.verified'), undefined);
                 return helper.createResponse(res, res.__('AUTHOR.verifyOtp.verified'), undefined, constants.SUCCESS);
             } else if (checkOtp == null) {
@@ -336,7 +326,7 @@ export const resetPassword = async function (req: customRequest, res: Response) 
         if (check) {
             if (check.otp === null) {
                 let update = await userModel.updateUser({ password: new_password }, check.uuid);
-                logger.info(__filename, req.method, check.uuid, i18n.__('AUTHOR.Reset_pwd.success'), undefined);
+                logger.info(__filename, req.method, check.uuid, res.__('AUTHOR.Reset_pwd.success'), undefined);
                 return helper.createResponse(res, res.__('AUTHOR.Reset_pwd.success'), undefined, constants.SUCCESS);
             }
             return helper.createResponse(res, res.__('AUTHOR.Reset_pwd.verify'), undefined, undefined);
@@ -364,6 +354,9 @@ export const updateUser = async (req: customRequest, res: Response) => {
 
         let image: any = await userModel.getOne({ uuid: userUuid }, ['id', 'profile_image']);
         // console.log(image.dataValues.reputation);
+        if (!image) {
+            return helper.createResponse(res, res.__('NOT_FOUND'), undefined, constants.NOT_FOUND_ERR);
+        }
 
         let profile_image = req.files.profile_image ? req.files.profile_image : image.profile_image;
 

@@ -1,0 +1,11 @@
+"id","uuid","first_name","last_name","display_name","email","phone_number","reputation","is_email_verified","is_moderator","profile_image","allSkills","createdAt","updatedAt","deletedAt"
+4,"5d22f905-19d2-4177-ac35-3a3bbe0a4c89","Shail","Gor","shail20","shailgor20+1@gmail.com","1564631","27",true,false,"http://smartsense-nodejs-poc.s3.ap-south-1.amazonaws.com/img-1649236922579.jpeg","javascript,typescript",,,
+11,"c8bf79ee-e666-402e-8068-38fcbe084ea3","ABC","Gor","shailgor8","shailgor20+8@gmail.com","1564631","5",false,false,,"express.js,java",,,
+8,"f5685285-a8d7-45de-ba96-72e1e2268d89","Shail","Gor","shailgor5","shailgor20+5@gmail.com","1564631",,false,false,"http://smartsense-nodejs-poc.s3.ap-south-1.amazonaws.com/img-1649330805077.jpeg","mysql,typescript,javascript,node.js",,,
+10,"43f378e4-fc41-4fb7-b3e1-b0944c656b41","Shail","Gor","shailgor7","shailgor20+7@gmail.com","1564631",,false,false,,"python,mysql,typescript,node.js",,,
+9,"59e91d6e-319d-4a59-850b-c0d0fd2fa998","Shail","Gor","shailgor6","shailgor20+6@gmail.com","1564631",,false,false,,"mysql,typescript,javascript,node.js",,,
+2,"d5a7c9f9-b97e-41b4-8a3f-40e92065f581","abc1","xyz","abc","shailgor20@gmail.com","1564631",,true,false,"http://smartsense-nodejs-poc.s3.ap-south-1.amazonaws.com/img-1649158014991.jpeg","",,,
+7,"93ae6eec-61ac-44e6-9529-ee49796a7dfe","shail","Gor","shailgor4","shailgor20+4@gmail.com","1564631",,false,false,"http://smartsense-nodejs-poc.s3.ap-south-1.amazonaws.com/img-1649330541060.jpeg","",,,
+6,"745e8d86-bba7-40f0-9b42-ab2af5b829ab","Shail","Gor","shailgor08","shailgor20+3@gmail.com","1564631",,false,false,"http://smartsense-nodejs-poc.s3.ap-south-1.amazonaws.com/img-1649330311744.jpeg","",,,
+5,"cca6c3c0-b7f2-4982-b0c4-0006ae91e999","Shail","Gor","shailgor07","shailgor20+2@gmail.com","1564631",,false,false,"http://smartsense-nodejs-poc.s3.ap-south-1.amazonaws.com/img-1649329017314.jpeg","",,,
+3,"c384e731-9e68-450e-95d4-aa2614045196","abc2","xyz","abc","shailgor20@gmail.com","1564631",,true,false,"http://smartsense-nodejs-poc.s3.ap-south-1.amazonaws.com/img-1649158516771.jpeg","",,,

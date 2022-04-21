@@ -160,6 +160,7 @@ Vote.belongsTo(User, {
 // one user has many scores
 User.hasMany(Score, {
     foreignKey: 'user_id',
+    as: 'ABC',
     sourceKey: 'id',
 });
 Score.belongsTo(User, {
