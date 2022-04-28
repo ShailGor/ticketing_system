@@ -81,11 +81,12 @@ export const add = async (req: customRequest, res: Response) => {
         }
 
         let totalScore = await scoreModel.totalScore({ user_id: user.user_id });
+        console.log(totalScore);
 
-        // TODO
-        /* if (totalScore >= 100) {
-            await userModel.updateUser({ is_moderator: true }, { id: user_id });
-        } */
+        // TODO//
+        if (totalScore >= 100) {
+            await userModel.updateUser({ is_moderator: true }, { id: user.user_id });
+        }
 
         transaction = await sequelize.transaction();
         let addVote: any = await voteModel.addVote(body);

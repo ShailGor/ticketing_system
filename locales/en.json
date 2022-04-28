@@ -121,6 +121,12 @@
                 "size": "Image is not greater than 5MB",
                 "type": "Image must be in jpg/jpeg/png"
             }
+        },
+        "answerAccept": {
+            "Accepted": "Answer Accepted successfully...",
+            "already": "Question's Answer already accepted",
+            "wrong": "You have no acess to accept this answer",
+            "no_acess": "please login to edit this post"
         }
     },
     "ANSWER": {

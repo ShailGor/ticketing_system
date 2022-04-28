@@ -37,7 +37,7 @@ export const list = async (req: Request, res: Response) => {
         const { count, rows }: any = await userModel.getMany(startPage, recordsPerPage, condition, orderBy, excludeUserAttributes);
         // console.log({ count, rows });
 
-        return helper.pagination(page, recordsPerPage, count, rows, sortField, orderBy, res);
+        return helper.pagination(page, recordsPerPage, count, rows, sortField, sortOrder, res);
     } catch (e) {
         logger.error(__filename, 'userList', undefined, 'userList ', e);
         return helper.createResponse(res, res.__('INTERNAL_SERVER_ERR'), undefined, constants.INTERNAL_SERVER_ERR);

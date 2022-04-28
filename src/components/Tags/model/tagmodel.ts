@@ -11,8 +11,8 @@ export async function getByTag(condition: any = {}, attributes: string[] = [], o
             include: {
                 model: Question,
                 as: 'questions',
+                where: { is_published: true },
                 attributes: ['title', 'description', 'image'],
-                through: { attributes: [] },
                 include: [
                     {
                         model: User,

@@ -14,6 +14,7 @@ class i18nClass {
             },
             objectNotation: true,
             defaultLocale: 'en',
+            queryParameter: 'lang',
         });
     }
 }

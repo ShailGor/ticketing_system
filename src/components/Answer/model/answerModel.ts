@@ -103,10 +103,10 @@ export async function addAns(data: any, transaction: Transaction | undefined = u
     }
 }
 
-export async function updateAns(data: answerInterface, Uuid: string, transaction: Transaction | undefined = undefined): Promise<any | boolean> {
+export async function updateAns(data: any, condition: any = {}, transaction: Transaction | undefined = undefined): Promise<any | boolean> {
     try {
         let updateObj = await Answer.update(data, {
-            where: { uuid: Uuid },
+            where: condition,
             transaction: transaction ? transaction : undefined,
         });
         return updateObj;

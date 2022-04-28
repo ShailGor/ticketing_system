@@ -158,7 +158,7 @@ export const updateAnswer = async (req: customRequest, res: Response) => {
             }
 
             transaction = await sequelize.transaction();
-            await answerModel.updateAns(body, answerUuid, transaction);
+            await answerModel.updateAns(body, { uuid: answerUuid }, transaction);
             await transaction.commit();
 
             let data = await answerModel.getOne({ uuid: answerUuid });

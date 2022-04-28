@@ -4,7 +4,7 @@ import sequelize from '../../../utils/dbConfig';
 import bcrypt from 'bcrypt';
 import { Question } from '../../Question/schema/questionSchema';
 import { Answer } from '../../Answer/schema/answerSchema';
-import { Skill } from './skillSchema';
+import { Skill } from './skill/skillSchema';
 import { UserSkills } from './userSkillsSchema';
 import Vote from '../../Votes/schema';
 import Score from '../../Score/schema';
@@ -160,7 +160,7 @@ Vote.belongsTo(User, {
 // one user has many scores
 User.hasMany(Score, {
     foreignKey: 'user_id',
-    as: 'ABC',
+    as: 'score',
     sourceKey: 'id',
 });
 Score.belongsTo(User, {

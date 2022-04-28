@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, response, Response } from 'express';
 import path from 'path';
 import { Op } from 'sequelize';
 import { customRequest } from '../../../environment';
@@ -9,6 +9,7 @@ import helper from '../../../utils/helper';
 import logger from '../../../utils/logger';
 import adminModel from '../../Admin/model';
 import answerModel from '../../Answer/model';
+import scoreModel from '../../Score/model';
 import userModel from '../../User/model';
 import voteModel from '../../Votes/model';
 import questionModel from '../model';
@@ -233,9 +234,55 @@ export const deleteQuestion = async (req: customRequest, res: Response) => {
             return helper.createResponse(res, res.__('QUESTION.deleted'), undefined, constants.SUCCESS);
         }
         return helper.createResponse(res, res.__('QUESTION.not_access'), undefined, constants.UNAUTHORIZED);
-    } catch (e) {
+    } catch (e: any) {
         console.log(e);
         if (transaction) await transaction.rollback();
+        logger.error(__filename, 'DeleteQuestion', questionUuid, 'Error During Delete Question : ', e);
+        return helper.createResponse(res, res.__('INTERNAL_SERVER_ERR'), undefined, constants.INTERNAL_SERVER_ERR);
+    }
+};
+
+export const isAccept = async (req: customRequest, res: Response) => {
+    let questionUuid: string = req.params.uuid;
+    let { answerUuid } = req.body;
+    let user_uuid: any = req.custom?.uuid;
+    try {
+        let User: any;
+        if (user_uuid) {
+            User = await userModel.getOne({ uuid: user_uuid });
+        }
+
+        let Question_Data: any = await questionModel.getOne({ uuid: questionUuid }, ['id', 'user_id']);
+
+        if (User) {
+            if (Question_Data.user_id === User.id) {
+                console.log('h', answerUuid);
+                let answerData: any = await answerModel.getOne({ question_id: Question_Data.id }, ['user_id', 'is_accepted']);
+
+                if (answerData.is_accepted != true) {
+                    let answer: any = await answerModel.updateAns(
+                        { is_accepted: 1 },
+                        { [Op.and]: { uuid: answerUuid, question_id: Question_Data.id } }
+                    );
+
+                    console.log(answerData.is_accepted);
+
+                    if (answer == true) {
+                        let score = await scoreModel.addScore({
+                            user_id: answerData.user_id,
+                            reputation: 10,
+                            criteria: 'Answer Accepted',
+                        });
+                    }
+                    return helper.createResponse(res, res.__('QUESTION.answerAccept.Accepted'), undefined, constants.SUCCESS);
+                }
+                return helper.createResponse(res, res.__('QUESTION.answerAccept.already'), undefined, constants.VALIDATION_SERVER_ERR);
+            }
+            return helper.createResponse(res, res.__('QUESTION.answerAccept.wrong'), undefined, constants.UNAUTHORIZED);
+        }
+        return helper.createResponse(res, res.__('QUESTION.answerAccept.no_acess'), undefined, constants.UNAUTHORIZED);
+    } catch (e: any) {
+        console.log(e);
         logger.error(__filename, 'DeleteQuestion', questionUuid, 'Error During Delete Question : ', e);
         return helper.createResponse(res, res.__('INTERNAL_SERVER_ERR'), undefined, constants.INTERNAL_SERVER_ERR);
     }

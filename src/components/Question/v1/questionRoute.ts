@@ -25,6 +25,10 @@ router.put('/:uuid', [authentication, questionValidation.update], (req: Request,
     questionController.updateQuestion(req, res);
 });
 
+router.put('/answerAccept/:uuid', [authentication], (req: Request, res: Response) => {
+    questionController.isAccept(req, res);
+});
+
 router.delete('/:uuid', [authentication], (req: Request, res: Response) => {
     questionController.deleteQuestion(req, res);
 });

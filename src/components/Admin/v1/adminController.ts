@@ -14,7 +14,6 @@ import * as questionHelper from '../../Question/v1/questionHelper';
 import questionModel from '../../Question/model';
 import sequelize, { Op } from 'sequelize';
 import { createPDF } from './adminHelper';
-import { Skill } from '../../User/schema/skillSchema';
 import tagmodel from '../../Tags/model';
 
 export const login = async function (req: customRequest, res: Response) {
@@ -272,7 +271,8 @@ export async function userReport(req: customRequest, res: Response) {
                 filename = 'user' + Date.now() + '.pdf';
                 reportPath = '/home/shail/Desktop/Ticketing_System/Reports/' + filename;
 
-                let pdf = createPDF(dataList, options, reportPath);
+                let pdf = await createPDF(dataList, options, reportPath);
+                // return res.download(reportPath);
                 return helper.createResponse(res, res.__('ADMIN.Report.pdf'), undefined, constants.SUCCESS);
             }
         }

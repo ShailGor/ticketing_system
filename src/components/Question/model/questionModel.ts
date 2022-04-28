@@ -69,7 +69,7 @@ export async function getOne(condition: any = {}, attributes: string[] = [], oth
                 },
                 {
                     model: Answer,
-                    attributes: ['answer', 'answer_image', 'user_id'],
+                    attributes: ['answer', 'answer_image', 'user_id', 'is_accepted'],
                     include: [
                         {
                             model: User,

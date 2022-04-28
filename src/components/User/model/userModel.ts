@@ -1,9 +1,7 @@
 import sequelize, { Model } from 'sequelize';
 import { Op, Transaction } from 'sequelize';
-import scoreModel from '../../Score/model';
-import Score from '../../Score/schema';
 import { User } from '../schema';
-import { Skill } from '../schema/skillSchema';
+import { Skill } from '../schema/skill/skillSchema';
 import { userSkill } from '../schema/userSchema';
 import { userInterface } from '../types/userTypes';
 
@@ -64,7 +62,7 @@ export async function getOne(condition: any = {}, attributes: string[] = [], oth
             where: condition,
             attributes: {
                 include: [[sequelize.literal('(SELECT SUM(reputation) FROM scores where scores.user_id = User.id)'), 'reputation']],
-                exclude: ['id', 'created_at', 'updated_at', 'deleted_at'],
+                exclude: ['created_at', 'updated_at', 'deleted_at'],
             },
             include: [
                 {
