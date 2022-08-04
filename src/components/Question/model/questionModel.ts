@@ -7,7 +7,15 @@ import { associateInterface, questionInterface } from '../types/questionTypes';
 import { Answer } from '../../Answer/schema/answerSchema';
 import sequelize from 'sequelize';
 
-export async function getMany(page: number, recordsPerPage: number, condition: any, order: any, attributes: string[] = [], other: object = {}) {
+export async function getMany(
+    page: number,
+    recordsPerPage: number,
+    condition: any,
+    tagCondition: any = {},
+    order: any,
+    attributes: string[] = [],
+    other: object = {}
+) {
     let { count, rows } = await Question.findAndCountAll({
         where: condition,
         attributes: {
@@ -22,6 +30,7 @@ export async function getMany(page: number, recordsPerPage: number, condition: a
             {
                 model: Tag,
                 as: 'tags',
+                where: tagCondition,
                 attributes: ['tag'],
                 through: { attributes: [] },
             },
@@ -46,6 +55,7 @@ export async function getMany(page: number, recordsPerPage: number, condition: a
         offset: page,
         limit: recordsPerPage,
         ...other,
+        logging: console.log,
     });
     return { count, rows };
 }

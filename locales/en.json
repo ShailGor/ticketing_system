@@ -161,7 +161,14 @@
             "csv": "Csv file report created Successfully..."
         },
         "Tag": {
-            "created":"Tag added successfully..."
+            "created":"Tag added successfully...",
+            "already":"Tag alredy added"
+        }
+    },
+    "TAG": {
+        "Validations": {
+            "required": "Tag is required",
+            "valid": "Tag must be string and cannot null"
         }
     }
 }

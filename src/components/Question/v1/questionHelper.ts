@@ -1,8 +1,10 @@
 import { Op } from 'sequelize';
+import Tag from '../../Tags/schema';
 
 export function getOrderByfield(search: any, sortOrder: any) {
     let orderBy, sortField;
     let condition: any = [];
+    let tagCondition: any = [];
 
     if (search) {
         let filter = search.filter;
@@ -32,11 +34,18 @@ export function getOrderByfield(search: any, sortOrder: any) {
                         [key]: { [Op.like]: `%${data}%` },
                     });
                     break;
+                case 'tag':
+                    orderBy = [[{ model: Tag, as: 'tags' }, 'tag', sortOrder]];
+                    sortField = 'tag';
+                    tagCondition.push({
+                        [key]: { [Op.like]: `%${data}%` },
+                    });
+                    break;
             }
         }
     } else {
         orderBy = [['created_at', sortOrder]];
         sortField = 'created_at';
     }
-    return { orderBy, sortField, condition };
+    return { orderBy, sortField, condition, tagCondition };
 }

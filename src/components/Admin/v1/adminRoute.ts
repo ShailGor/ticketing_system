@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import authentication from '../../../middleware/authorization';
+import tagValidation from '../../Tags/v1/tagValidation';
 import * as adminController from './adminController';
 
 const router = express.Router();
@@ -28,7 +29,7 @@ router.post('/userReport', [authentication], (req: Request, res: Response) => {
     adminController.userReport(req, res);
 });
 
-router.post('/tag', [authentication], (req: Request, res: Response) => {
+router.post('/tag', [authentication, tagValidation.add], (req: Request, res: Response) => {
     adminController.addtag(req, res);
 });
 

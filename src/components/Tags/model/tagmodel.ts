@@ -41,6 +41,20 @@ export async function getByTag(condition: any = {}, attributes: string[] = [], o
     }
 }
 
+export async function getTag(condition: any = {}, attributes: string[] = [], other: object = {}) {
+    try {
+        let findObj = await Tag.findOne({
+            where: condition,
+            attributes: attributes.length > 0 ? attributes : undefined,
+            ...other,
+            logging: console.log,
+        });
+        return findObj;
+    } catch (e) {
+        throw e;
+    }
+}
+
 export async function addTag(data: any) {
     try {
         let insertObj = await Tag.create(data);

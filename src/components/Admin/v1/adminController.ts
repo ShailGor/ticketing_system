@@ -188,11 +188,17 @@ export async function questionListByTags(req: customRequest, res: Response) {
 
 export async function addtag(req: customRequest, res: Response) {
     try {
-        let { tag } = req.body;
+        let { Tag } = req.body;
 
-        let data = await tagmodel.addTag({ tag: tag });
-        logger.info(__filename, 'Add Tag', undefined, 'Add Tag data', {});
-        return helper.createResponse(res, res.__('ADMIN.Tag.created'), data, constants.SUCCESS);
+        let check = await tagmodel.getTag({ tag: Tag });
+        console.log(check);
+
+        if (!check) {
+            let data = await tagmodel.addTag({ tag: Tag });
+            logger.info(__filename, 'Add Tag', undefined, 'Add Tag data', {});
+            return helper.createResponse(res, res.__('ADMIN.Tag.created'), data, constants.SUCCESS);
+        }
+        return helper.createResponse(res, res.__('ADMIN.Tag.already'), undefined, constants.VALIDATION_SERVER_ERR);
     } catch (e) {
         console.log(e);
         logger.error(__filename, 'Add Tag', undefined, 'Error During Add Tag in table : ', e);
@@ -214,8 +220,8 @@ export async function userReport(req: customRequest, res: Response) {
             // console.log(user.skills);
             user.reputation = user.dataValues.reputations;
             user.allSkills = user.skills
-                .map(function (skill: any) {
-                    return skill.dataValues.skill;
+                .map(function (skilltemp: any) {
+                    return skilltemp.dataValues.skill;
                 })
                 .toString();
         });
@@ -223,7 +229,7 @@ export async function userReport(req: customRequest, res: Response) {
         if (userDetails) {
             if (type == 'csv') {
                 filename = 'user' + Date.now() + '.csv';
-                reportPath = '/home/shail/Desktop/Ticketing_System/Reports/' + Date.now() + '.csv';
+                reportPath = '/home/shail/Desktop/Ticketing_System/Reports/' + filename;
 
                 const fields = [
                     'id',

@@ -6,6 +6,12 @@ export default (app: Application) => {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
+    app.set('view engine', 'ejs');
+
+    app.get('/', (req, res) => {
+        res.render('pages/index');
+    });
+
     app.use(i18n.init);
     i18n.setLocale('en');
 

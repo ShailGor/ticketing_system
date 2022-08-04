@@ -24,7 +24,11 @@ export const list = async (req: Request, res: Response) => {
         let { search } = req.body;
 
         sortOrder = helper.getDefaultSortOrder(sortOrder);
-        const { orderBy, sortField, condition } = questionHelper.getOrderByfield(search, sortOrder);
+        const { orderBy, sortField, condition, tagCondition } = questionHelper.getOrderByfield(search, sortOrder);
+
+        condition.push({
+            is_published: true,
+        });
 
         page = page ? page : 1;
         recordsPerPage = recordsPerPage ? recordsPerPage : 10;
@@ -35,7 +39,7 @@ export const list = async (req: Request, res: Response) => {
 
         let startPage = (page - 1) * recordsPerPage;
 
-        const { count, rows }: any = await questionModel.getMany(startPage, recordsPerPage, condition, orderBy, questionAttributes);
+        const { count, rows }: any = await questionModel.getMany(startPage, recordsPerPage, condition, tagCondition, orderBy, questionAttributes);
 
         // Total Votes given in the question(upVote and downVote)
         // for (let i = 0; i < rows.length; i++) {
@@ -46,8 +50,20 @@ export const list = async (req: Request, res: Response) => {
         //         [Op.and]: [{ question_id: rows[i].id }, { vote: false }],
         //     });
         // }
+        console.log(rows);
 
-        return helper.pagination(page, recordsPerPage, count, rows, sortField, orderBy, res);
+        rows.map(function (question: any) {
+            // console.log(question.skills);
+            question.user = question.dataValues.user.dataValues.display_name;
+            question.tags = question.tags.map(function (tagtemp: any) {
+                return tagtemp.dataValues.tag;
+            });
+        });
+
+        res.render('pages/index', {
+            questionresult: rows,
+        });
+        // return helper.pagination(page, recordsPerPage, count, rows, sortField, sortOrder, res);
     } catch (e) {
         logger.error(__filename, 'List', undefined, 'List ', e);
         return helper.createResponse(res, res.__('INTERNAL_SERVER_ERR'), undefined, constants.INTERNAL_SERVER_ERR);

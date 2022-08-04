@@ -20,7 +20,7 @@ sequelize.sync();
 
         server.listen(PORT, function () {
             // console.log('Express listening on port ' + PORT);
-            logger.info(__filename, 'server', '', `Server is running on ${PORT}`, ``);
+            logger.info(__filename, 'server', '', `Server running at http://localhost:${PORT}/`, ``);
         });
     } catch (error) {
         console.log('Unable to connect to the server');
