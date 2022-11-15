@@ -1,6 +1,22 @@
 /node_modules
 /.env
-/build
 /Reports
 /views
 /Ticketing_system_src
+
+# build
+build/components
+build/middleware
+build/routes
+build/utils
+build/app.*
+build/server.*
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
