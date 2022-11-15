@@ -8,30 +8,30 @@ export async function getByTag(condition: any = {}, attributes: string[] = [], o
         let { count, rows } = await Tag.findAndCountAll({
             where: condition,
             attributes: attributes,
-            include: {
-                model: Question,
-                as: 'questions',
-                where: { is_published: true },
-                attributes: ['title', 'description', 'image'],
-                include: [
-                    {
-                        model: User,
-                        as: 'user',
-                        attributes: ['display_name', 'email'],
-                    },
-                    {
-                        model: Answer,
-                        attributes: ['answer', 'answer_image'],
-                        include: [
-                            {
-                                model: User,
-                                as: 'user',
-                                attributes: ['display_name', 'email'],
-                            },
-                        ],
-                    },
-                ],
-            },
+            // include: {
+            //     model: Question,
+            //     as: 'questions',
+            //     where: { is_published: true },
+            //     attributes: ['title', 'description', 'image'],
+            //     include: [
+            //         {
+            //             model: User,
+            //             as: 'user',
+            //             attributes: ['display_name', 'email'],
+            //         },
+            //         {
+            //             model: Answer,
+            //             attributes: ['answer', 'answer_image'],
+            //             include: [
+            //                 {
+            //                     model: User,
+            //                     as: 'user',
+            //                     attributes: ['display_name', 'email'],
+            //                 },
+            //             ],
+            //         },
+            //     ],
+            // },
             order: order,
             ...other,
         });

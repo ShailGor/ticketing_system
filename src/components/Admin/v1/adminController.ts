@@ -15,6 +15,9 @@ import questionModel from '../../Question/model';
 import sequelize, { Op } from 'sequelize';
 import { createPDF } from './adminHelper';
 import tagmodel from '../../Tags/model';
+import Question from '../../Question/schema';
+import { User } from '../../User/schema';
+import { Answer } from '../../Answer/schema/answerSchema';
 
 export const login = async function (req: customRequest, res: Response) {
     try {
@@ -161,6 +164,30 @@ export async function questionListByTags(req: customRequest, res: Response) {
             }
         }
         let other = {
+            include: {
+                model: Question,
+                as: 'questions',
+                where: { is_published: true },
+                attributes: ['title', 'description', 'image'],
+                include: [
+                    {
+                        model: User,
+                        as: 'user',
+                        attributes: ['display_name', 'email'],
+                    },
+                    {
+                        model: Answer,
+                        attributes: ['answer', 'answer_image'],
+                        include: [
+                            {
+                                model: User,
+                                as: 'user',
+                                attributes: ['display_name', 'email'],
+                            },
+                        ],
+                    },
+                ],
+            },
             offset: startPage,
             limit: recordsPerPage,
         };
