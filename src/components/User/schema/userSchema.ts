@@ -16,9 +16,9 @@ export class User extends Model {
     public last_name!: string;
     public display_name!: string;
     public email!: string;
-    public is_email_verified!: Boolean;
+    public is_email_verified!: boolean;
     public password!: string;
-    public is_moderator!: Boolean;
+    public is_moderator!: boolean;
     public phone_number!: string;
     public profile_image!: string | null;
     // public created_at!: Date;
@@ -61,8 +61,8 @@ User.init(
             type: DataTypes.STRING,
             allowNull: false,
             set: function (value: string) {
-                let salt: string | Buffer = bcrypt.genSaltSync(10);
-                let hashedPassword: string | Buffer = bcrypt.hashSync(value, salt);
+                const salt: string | Buffer = bcrypt.genSaltSync(10);
+                const hashedPassword: string | Buffer = bcrypt.hashSync(value, salt);
                 this.setDataValue('password', hashedPassword);
             },
         },
@@ -86,7 +86,7 @@ User.init(
             },
         },
     },
-    {
+    {   
         sequelize,
         modelName: 'User',
         tableName: 'users',

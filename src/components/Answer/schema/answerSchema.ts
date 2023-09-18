@@ -8,7 +8,7 @@ export class Answer extends Model {
     public user_id!: number;
     public question_id!: number;
     public answer!: string;
-    public is_accepted!: Boolean;
+    public is_accepted!: boolean;
     public answer_image!: string | null;
 }
 

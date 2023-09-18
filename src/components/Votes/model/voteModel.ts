@@ -4,7 +4,7 @@ import { User } from '../../User/schema';
 import Vote from '../schema';
 
 export async function getMany(attributes: string[] = []) {
-    let data = await Vote.findAll({
+    const data = await Vote.findAll({
         attributes: attributes.length > 0 ? attributes : undefined,
         include: [
             {
@@ -64,7 +64,7 @@ export async function getOne(condition: any = {}, attributes: string[] = [], oth
 
 export async function addVote(data: any, transaction: Transaction | undefined = undefined): Promise<Vote | boolean> {
     try {
-        let insertedObj: any = await Vote.create(data, {
+        const insertedObj: any = await Vote.create(data, {
             transaction: transaction ? transaction : undefined,
         });
         return insertedObj;
@@ -75,7 +75,7 @@ export async function addVote(data: any, transaction: Transaction | undefined = 
 
 export async function updateVote(data: any, Uuid: string, transaction: Transaction | undefined = undefined): Promise<any | boolean> {
     try {
-        let updateObj = await Vote.update(data, {
+        const updateObj = await Vote.update(data, {
             where: { uuid: Uuid },
             transaction: transaction ? transaction : undefined,
         });

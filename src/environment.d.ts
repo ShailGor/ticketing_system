@@ -3,8 +3,8 @@ import { Request } from 'express';
 declare namespace Environment {
     export interface customRequest extends Request {
         custom?: {
-            uuid?: String;
-            adminUuid?: String;
+            uuid?: string;
+            adminUuid?: string;
         };
         files?: any;
     }

@@ -3,12 +3,12 @@ import Tag from '../../Tags/schema';
 
 export function getOrderByfield(search: any, sortOrder: any) {
     let orderBy, sortField;
-    let condition: any = [];
-    let tagCondition: any = [];
+    const condition: any = [];
+    const tagCondition: any = [];
 
     if (search) {
-        let filter = search.filter;
-        for (let key in filter) {
+        const filter = search.filter;
+        for (const key in filter) {
             const data: any = filter[key];
             // console.log(data);
 

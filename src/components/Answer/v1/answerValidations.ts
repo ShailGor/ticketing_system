@@ -6,7 +6,7 @@ import { checkImageSize, checkImageType, isEmpty } from '../../../utils/validato
 
 class AnswerValidation {
     add(req: customRequest, res: Response, next: NextFunction) {
-        let { user_id, question_id, answer, is_accepted } = req.body;
+        const { user_id, question_id, answer, is_accepted } = req.body;
 
         if (!answer) {
             return helper.createResponse(res, res.__('ANSWER.Validations.answer.required'), undefined, constants.VALIDATION_SERVER_ERR);
@@ -21,7 +21,7 @@ class AnswerValidation {
         next();
     }
     update(req: customRequest, res: Response, next: NextFunction) {
-        let { user_id, question_id, answer, is_accepted } = req.body;
+        const { user_id, question_id, answer, is_accepted } = req.body;
 
         if (answer) {
             if (parseInt(answer) || isEmpty(answer)) {

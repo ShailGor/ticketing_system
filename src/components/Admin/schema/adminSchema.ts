@@ -46,8 +46,8 @@ Admin.init(
             type: DataTypes.STRING,
             allowNull: false,
             set: function (value: string) {
-                let salt: string | Buffer = bcrypt.genSaltSync(10);
-                let hashedPassword: string | Buffer = bcrypt.hashSync(value, salt);
+                const salt: string | Buffer = bcrypt.genSaltSync(10);
+                const hashedPassword: string | Buffer = bcrypt.hashSync(value, salt);
                 this.setDataValue('password', hashedPassword);
             },
         },

@@ -2,11 +2,11 @@ import { Op } from 'sequelize';
 
 export function getOrderByfield(search: any, sortOrder: any) {
     let orderBy, sortField;
-    let condition: any = [];
+    const condition: any = [];
 
     if (search) {
-        let filter = search.filter;
-        for (let key in filter) {
+        const filter = search.filter;
+        for (const key in filter) {
             const data: any = filter[key];
             // console.log(data);
 

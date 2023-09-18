@@ -7,11 +7,11 @@ declare namespace UserEnvironment {
         email?: string;
         password?: string;
         phone_number?: string;
-        is_email_verified?: Boolean;
+        is_email_verified?: boolean;
         skills?: string;
         uuid?: string;
         otp?: number;
-        is_moderator?: Boolean;
+        is_moderator?: boolean;
         profile_image?: string | null;
         created_at?: Date;
         updated_at?: Date;

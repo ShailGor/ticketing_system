@@ -6,7 +6,7 @@ import { isEmpty } from '../../../utils/validator/customValidations';
 
 class TagValidation {
     add(req: customRequest, res: Response, next: NextFunction) {
-        let { Tag } = req.body;
+        const { Tag } = req.body;
 
         if (!Tag) {
             return helper.createResponse(res, res.__('TAG.Validations.required'), undefined, constants.VALIDATION_SERVER_ERR);

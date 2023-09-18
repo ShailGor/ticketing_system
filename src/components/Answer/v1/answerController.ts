@@ -18,7 +18,7 @@ const answerAttributes = ['id', 'uuid', 'answer', 'is_accepted', 'answer_image',
 export const list = async (req: Request, res: Response) => {
     try {
         let { page, recordsPerPage, sortOrder } = req.body;
-        let { search } = req.body;
+        const { search } = req.body;
 
         sortOrder = helper.getDefaultSortOrder(sortOrder);
         const { orderBy, sortField, condition } = answerHelper.getOrderByfield(search, sortOrder);
@@ -30,7 +30,7 @@ export const list = async (req: Request, res: Response) => {
             return helper.createResponse(res, res.__('PAGE'), null, constants.VALIDATION_SERVER_ERR);
         }
 
-        let startPage = (page - 1) * recordsPerPage;
+        const startPage = (page - 1) * recordsPerPage;
 
         const { count, rows }: any = await answerModel.getMany(startPage, recordsPerPage, condition, orderBy, answerAttributes);
 
@@ -51,7 +51,7 @@ export const list = async (req: Request, res: Response) => {
 };
 
 export const getAnswer = async (req: Request, res: Response) => {
-    let answerUuid: string = req.params.uuid;
+    const answerUuid: string = req.params.uuid;
     try {
         const Data: any = await answerModel.getOne(
             {
@@ -84,23 +84,23 @@ export const getAnswer = async (req: Request, res: Response) => {
 export const addAnswer = async (req: customRequest, res: Response) => {
     let transaction;
     try {
-        let { user_id, question_id, answer, is_accepted } = req.body;
-        let body: answerInterface = {
+        const { user_id, question_id, answer, is_accepted } = req.body;
+        const body: answerInterface = {
             user_id: user_id,
             question_id: question_id,
             answer: answer,
             // is_accepted: is_accepted,
         };
 
-        let answer_image = req.files.answer_image ? req.files.answer_image : null;
+        const answer_image = req.files.answer_image ? req.files.answer_image : null;
 
         if (answer_image !== null) {
             //     body.image = null;
             // } else {
-            let imageExtension = path.extname(answer_image.name);
-            let answer_imageName = 'img-' + Date.now() + imageExtension;
+            const imageExtension = path.extname(answer_image.name);
+            const answer_imageName = 'img-' + Date.now() + imageExtension;
 
-            let bufferFile = Buffer.from(answer_image.data, 'binary');
+            const bufferFile = Buffer.from(answer_image.data, 'binary');
 
             await S3.uploadimageToS3(answer_imageName, bufferFile);
 
@@ -108,7 +108,7 @@ export const addAnswer = async (req: customRequest, res: Response) => {
         }
 
         transaction = await sequelize.transaction();
-        let addQuestion: any = await answerModel.addAns(body, transaction);
+        const addQuestion: any = await answerModel.addAns(body, transaction);
         await transaction.commit();
 
         return helper.createResponse(res, res.__('ANSWER.created'), addQuestion, constants.SUCCESS);
@@ -121,37 +121,37 @@ export const addAnswer = async (req: customRequest, res: Response) => {
 
 export const updateAnswer = async (req: customRequest, res: Response) => {
     let transaction;
-    let user_uuid: any = req.custom?.uuid;
-    let answerUuid: string = req.params.uuid;
+    const user_uuid: any = req.custom?.uuid;
+    const answerUuid: string = req.params.uuid;
     try {
         // check user is moderator or not
-        let User: any = await userModel.getOne({ uuid: user_uuid }, ['id', 'is_moderator']);
-        let Answer_data: any = await answerModel.getOne({ uuid: answerUuid }, ['user_id']);
+        const User: any = await userModel.getOne({ uuid: user_uuid }, ['id', 'is_moderator']);
+        const Answer_data: any = await answerModel.getOne({ uuid: answerUuid }, ['user_id']);
         console.log(user_uuid);
 
         if (Answer_data.user_id === User.id || User.is_moderator == 'true') {
-            let { answer, is_accepted } = req.body;
-            let body: answerInterface = {
+            const { answer, is_accepted } = req.body;
+            const body: answerInterface = {
                 answer: answer,
                 is_accepted: is_accepted,
             };
 
-            let imageFile: any = await answerModel.getOne({ uuid: answerUuid }, ['answer_image']);
+            const imageFile: any = await answerModel.getOne({ uuid: answerUuid }, ['answer_image']);
 
-            let answer_image = req.files.answer_image ? req.files.answer_image : imageFile.answer_image;
+            const answer_image = req.files.answer_image ? req.files.answer_image : imageFile.answer_image;
 
             if (req.files.answer_image) {
-                let imageExtension = path.extname(answer_image.name);
-                let imageName = 'img-' + Date.now() + imageExtension;
+                const imageExtension = path.extname(answer_image.name);
+                const imageName = 'img-' + Date.now() + imageExtension;
 
                 if (imageFile.answer_image) {
-                    let url = imageFile.answer_image;
-                    let imageName = url.substring(url.lastIndexOf('/') + 1);
+                    const url = imageFile.answer_image;
+                    const imageName = url.substring(url.lastIndexOf('/') + 1);
 
                     await S3.deleteimageToS3(imageName);
                 }
 
-                let bufferFile = Buffer.from(answer_image.data, 'binary');
+                const bufferFile = Buffer.from(answer_image.data, 'binary');
                 await S3.uploadimageToS3(imageName, bufferFile);
 
                 body.answer_image = imageName;
@@ -161,7 +161,7 @@ export const updateAnswer = async (req: customRequest, res: Response) => {
             await answerModel.updateAns(body, { uuid: answerUuid }, transaction);
             await transaction.commit();
 
-            let data = await answerModel.getOne({ uuid: answerUuid });
+            const data = await answerModel.getOne({ uuid: answerUuid });
 
             return helper.createResponse(res, res.__('ANSWER.updated'), data, constants.SUCCESS);
         }
@@ -176,26 +176,26 @@ export const updateAnswer = async (req: customRequest, res: Response) => {
 
 export const deleteAnswer = async (req: customRequest, res: Response) => {
     let transaction;
-    let user_uuid: any = req.custom?.uuid;
-    let answerUuid: string = req.params.uuid;
+    const user_uuid: any = req.custom?.uuid;
+    const answerUuid: string = req.params.uuid;
 
     try {
-        let User: any = await userModel.getOne({ uuid: user_uuid }, ['id', 'is_moderator']);
-        let Answer_data: any = await answerModel.getOne({ uuid: answerUuid }, ['user_id']);
+        const User: any = await userModel.getOne({ uuid: user_uuid }, ['id', 'is_moderator']);
+        const Answer_data: any = await answerModel.getOne({ uuid: answerUuid }, ['user_id']);
 
         if (Answer_data.user_id === User.id || User.is_moderator == 'true') {
-            let imageFile: any = await answerModel.getOne({ uuid: answerUuid }, ['image']);
+            const imageFile: any = await answerModel.getOne({ uuid: answerUuid }, ['image']);
             // console.log(image.profile_image);
             if (imageFile.image) {
                 // Delete in AWs-S3
-                let url = imageFile.image;
-                let imageName = url.substring(url.lastIndexOf('/') + 1);
+                const url = imageFile.image;
+                const imageName = url.substring(url.lastIndexOf('/') + 1);
 
                 await S3.deleteimageToS3(imageName);
             }
 
             transaction = await sequelize.transaction();
-            let removeUser = await answerModel.deleteAns(answerUuid, transaction);
+            const removeUser = await answerModel.deleteAns(answerUuid, transaction);
             await transaction.commit();
 
             if (!removeUser) {

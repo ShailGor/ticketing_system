@@ -14,7 +14,7 @@ export async function getMany(
     other: object = {}
 ) {
     try {
-        let { count, rows }: any = await User.findAndCountAll({
+        const { count, rows }: any = await User.findAndCountAll({
             attributes: {
                 include: [[sequelize.literal('(SELECT SUM(reputation) FROM scores where scores.user_id = User.id)'), 'reputations']],
                 exclude: attributes,
@@ -58,7 +58,7 @@ export async function getMany(
 
 export async function getOne(condition: any = {}, attributes: string[] = [], other: object = {}): Promise<false | User | null> {
     try {
-        let Data: any = await User.findOne({
+        const Data: any = await User.findOne({
             where: condition,
             attributes: {
                 include: [[sequelize.literal('(SELECT SUM(reputation) FROM scores where scores.user_id = User.id)'), 'reputation']],
@@ -89,7 +89,7 @@ export async function createUser(data: any): Promise<User | boolean> {
     try {
         console.log('userData: ', data);
 
-        let insertedObj: any = await User.create(data, {
+        const insertedObj: any = await User.create(data, {
             include: {
                 association: userSkill,
             },
@@ -102,7 +102,7 @@ export async function createUser(data: any): Promise<User | boolean> {
 
 export async function updateUser(data: userInterface, condition: any = {}): Promise<any | boolean> {
     try {
-        let updateObj = await User.update(data, {
+        const updateObj = await User.update(data, {
             where: condition,
         });
         return updateObj;
@@ -113,7 +113,7 @@ export async function updateUser(data: userInterface, condition: any = {}): Prom
 
 export async function deleteUser(Uuid: string): Promise<any | boolean> {
     try {
-        let deleteData = await User.destroy({
+        const deleteData = await User.destroy({
             where: { uuid: Uuid },
         });
         return deleteData;
@@ -124,7 +124,7 @@ export async function deleteUser(Uuid: string): Promise<any | boolean> {
 
 export async function updateWithCondition(data: any, condition: any) {
     try {
-        let updateObj = await User.update(data, {
+        const updateObj = await User.update(data, {
             where: condition,
         });
     } catch (e) {
@@ -134,7 +134,7 @@ export async function updateWithCondition(data: any, condition: any) {
 
 export async function validateUser(email: string, display_name: string) {
     let message;
-    let data: any = await User.findOne({
+    const data: any = await User.findOne({
         attributes: ['email', 'display_name'],
         where: {
             [Op.or]: [{ email: email }, { display_name: display_name }],

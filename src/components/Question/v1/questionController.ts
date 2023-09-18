@@ -21,7 +21,7 @@ const questionAttributes = ['id', 'uuid', 'title', 'description', 'is_published'
 export const list = async (req: Request, res: Response) => {
     try {
         let { page, recordsPerPage, sortOrder } = req.body;
-        let { search } = req.body;
+        const { search } = req.body;
 
         sortOrder = helper.getDefaultSortOrder(sortOrder);
         const { orderBy, sortField, condition, tagCondition } = questionHelper.getOrderByfield(search, sortOrder);
@@ -37,7 +37,7 @@ export const list = async (req: Request, res: Response) => {
             return helper.createResponse(res, res.__('PAGE'), null, constants.VALIDATION_SERVER_ERR);
         }
 
-        let startPage = (page - 1) * recordsPerPage;
+        const startPage = (page - 1) * recordsPerPage;
 
         const { count, rows }: any = await questionModel.getMany(startPage, recordsPerPage, condition, tagCondition, orderBy, questionAttributes);
 
@@ -71,7 +71,7 @@ export const list = async (req: Request, res: Response) => {
 };
 
 export const getQuestion = async (req: Request, res: Response) => {
-    let questionUuid: string = req.params.uuid;
+    const questionUuid: string = req.params.uuid;
     try {
         const Data: any = await questionModel.getOne(
             {
@@ -106,8 +106,8 @@ export const getQuestion = async (req: Request, res: Response) => {
 export const addQuestion = async (req: customRequest, res: Response) => {
     let transaction;
     try {
-        let { user_id, title, description, is_published, tags } = req.body;
-        let body: associateInterface = {
+        const { user_id, title, description, is_published, tags } = req.body;
+        const body: associateInterface = {
             user_id: user_id,
             title: title,
             description: description,
@@ -115,20 +115,20 @@ export const addQuestion = async (req: customRequest, res: Response) => {
             tags: tags,
         };
 
-        let tags_array: any = JSON.parse(body.tags!);
+        const tags_array: any = JSON.parse(body.tags!);
         // console.log(tags_array);
         body.questionTags = tags_array.map((t_id: number) => {
             return { tag_id: t_id };
         });
         // console.log(body.questionTags);
 
-        let image = req.files.image ? req.files.image : null;
+        const image = req.files.image ? req.files.image : null;
 
         if (image !== null) {
-            let imageExtension = path.extname(image.name);
-            let imageName = 'img-' + Date.now() + imageExtension;
+            const imageExtension = path.extname(image.name);
+            const imageName = 'img-' + Date.now() + imageExtension;
 
-            let bufferFile = Buffer.from(image.data, 'binary');
+            const bufferFile = Buffer.from(image.data, 'binary');
 
             await S3.uploadimageToS3(imageName, bufferFile);
 
@@ -137,7 +137,7 @@ export const addQuestion = async (req: customRequest, res: Response) => {
         // console.log(body);
 
         transaction = await sequelize.transaction();
-        let addQuestion: any = await questionModel.addQuestion(body);
+        const addQuestion: any = await questionModel.addQuestion(body);
         await transaction.commit();
 
         // console.log(addQuestion);
@@ -152,9 +152,9 @@ export const addQuestion = async (req: customRequest, res: Response) => {
 
 export const updateQuestion = async (req: customRequest, res: Response) => {
     let transaction;
-    let user_uuid: any = req.custom?.uuid;
-    let admin: any = req.custom?.adminUuid;
-    let questionUuid: string = req.params.uuid;
+    const user_uuid: any = req.custom?.uuid;
+    const admin: any = req.custom?.adminUuid;
+    const questionUuid: string = req.params.uuid;
 
     try {
         // check user is moderator or not
@@ -164,33 +164,33 @@ export const updateQuestion = async (req: customRequest, res: Response) => {
         if (user_uuid) {
             User = await userModel.getOne({ uuid: user_uuid }, ['id', 'is_moderator']);
         }
-        let Question_Data: any = await questionModel.getOne({ uuid: questionUuid }, ['user_id']);
+        const Question_Data: any = await questionModel.getOne({ uuid: questionUuid }, ['user_id']);
 
         if (admin || Question_Data.user_id === User.id || User.is_moderator == 'true') {
-            let { user_id, title, description, is_published } = req.body;
-            let body: questionInterface = {
+            const { user_id, title, description, is_published } = req.body;
+            const body: questionInterface = {
                 user_id: user_id,
                 title: title,
                 description: description,
                 is_published: is_published,
             };
 
-            let imageFile: any = await questionModel.getOne({ uuid: questionUuid }, ['image']);
+            const imageFile: any = await questionModel.getOne({ uuid: questionUuid }, ['image']);
 
-            let image = req.files.image ? req.files.image : imageFile.image;
+            const image = req.files.image ? req.files.image : imageFile.image;
 
             if (req.files.image) {
-                let imageExtension = path.extname(image.name);
-                let imageName = 'img-' + Date.now() + imageExtension;
+                const imageExtension = path.extname(image.name);
+                const imageName = 'img-' + Date.now() + imageExtension;
 
                 if (imageFile.image) {
-                    let url = imageFile.image;
-                    let imageName = url.substring(url.lastIndexOf('/') + 1);
+                    const url = imageFile.image;
+                    const imageName = url.substring(url.lastIndexOf('/') + 1);
 
                     await S3.deleteimageToS3(imageName);
                 }
 
-                let bufferFile = Buffer.from(image.data, 'binary');
+                const bufferFile = Buffer.from(image.data, 'binary');
                 await S3.uploadimageToS3(imageName, bufferFile);
 
                 body.image = imageName;
@@ -200,7 +200,7 @@ export const updateQuestion = async (req: customRequest, res: Response) => {
             await questionModel.updateQuestion(body, questionUuid, transaction);
             await transaction.commit();
 
-            let data = await questionModel.getOne({ uuid: questionUuid }, questionAttributes);
+            const data = await questionModel.getOne({ uuid: questionUuid }, questionAttributes);
 
             return helper.createResponse(res, res.__('QUESTION.updated'), data, constants.SUCCESS);
         }
@@ -214,9 +214,9 @@ export const updateQuestion = async (req: customRequest, res: Response) => {
 
 export const deleteQuestion = async (req: customRequest, res: Response) => {
     let transaction;
-    let user_uuid: any = req.custom?.uuid;
-    let admin: any = req.custom?.adminUuid;
-    let questionUuid: string = req.params.uuid;
+    const user_uuid: any = req.custom?.uuid;
+    const admin: any = req.custom?.adminUuid;
+    const questionUuid: string = req.params.uuid;
 
     try {
         // console.log(admin);
@@ -225,22 +225,22 @@ export const deleteQuestion = async (req: customRequest, res: Response) => {
         if (user_uuid) {
             User = await userModel.getOne({ uuid: user_uuid }, ['id', 'is_moderator']);
         }
-        let Question_Data: any = await questionModel.getOne({ uuid: questionUuid }, ['user_id']);
+        const Question_Data: any = await questionModel.getOne({ uuid: questionUuid }, ['user_id']);
 
         if (Question_Data.user_id === User.id || User.is_moderator == 'true' || admin == true) {
-            let imageFile: any = await questionModel.getOne({ uuid: questionUuid }, ['image']);
+            const imageFile: any = await questionModel.getOne({ uuid: questionUuid }, ['image']);
             // console.log(image.profile_image);
 
             if (imageFile.image) {
                 // Delete in AWs-S3
-                let url = imageFile.image;
-                let imageName = url.substring(url.lastIndexOf('/') + 1);
+                const url = imageFile.image;
+                const imageName = url.substring(url.lastIndexOf('/') + 1);
 
                 await S3.deleteimageToS3(imageName);
             }
 
             transaction = await sequelize.transaction();
-            let removeUser = await questionModel.deleteQuestion(questionUuid, transaction);
+            const removeUser = await questionModel.deleteQuestion(questionUuid, transaction);
             await transaction.commit();
 
             if (!removeUser) {
@@ -259,24 +259,24 @@ export const deleteQuestion = async (req: customRequest, res: Response) => {
 };
 
 export const isAccept = async (req: customRequest, res: Response) => {
-    let questionUuid: string = req.params.uuid;
-    let { answerUuid } = req.body;
-    let user_uuid: any = req.custom?.uuid;
+    const questionUuid: string = req.params.uuid;
+    const { answerUuid } = req.body;
+    const user_uuid: any = req.custom?.uuid;
     try {
         let User: any;
         if (user_uuid) {
             User = await userModel.getOne({ uuid: user_uuid });
         }
 
-        let Question_Data: any = await questionModel.getOne({ uuid: questionUuid }, ['id', 'user_id']);
+        const Question_Data: any = await questionModel.getOne({ uuid: questionUuid }, ['id', 'user_id']);
 
         if (User) {
             if (Question_Data.user_id === User.id) {
                 console.log('h', answerUuid);
-                let answerData: any = await answerModel.getOne({ question_id: Question_Data.id }, ['user_id', 'is_accepted']);
+                const answerData: any = await answerModel.getOne({ question_id: Question_Data.id }, ['user_id', 'is_accepted']);
 
                 if (answerData.is_accepted != true) {
-                    let answer: any = await answerModel.updateAns(
+                    const answer: any = await answerModel.updateAns(
                         { is_accepted: 1 },
                         { [Op.and]: { uuid: answerUuid, question_id: Question_Data.id } }
                     );
@@ -284,7 +284,7 @@ export const isAccept = async (req: customRequest, res: Response) => {
                     console.log(answerData.is_accepted);
 
                     if (answer == true) {
-                        let score = await scoreModel.addScore({
+                        const score = await scoreModel.addScore({
                             user_id: answerData.user_id,
                             reputation: 10,
                             criteria: 'Answer Accepted',

@@ -1,0 +1,16 @@
+{
+  "defaultSeverity": "error",
+  "extends": ["tslint-plugin-prettier", "tslint-config-prettier"],
+  "jsRules": {
+    "max-line-length": {
+      "options": [120]
+    }
+  },
+  "rules": {
+    "prettier": false,
+    "object-literal-sort-keys": false,
+    "quotemark": [true, "single"],
+    "max-line-length": {}
+  },
+  "rulesDirectory": []
+}

@@ -6,7 +6,7 @@ import path from 'path';
 import ejs from 'ejs';
 import expressLayouts from 'express-ejs-layouts';
 
-var session = require('express-session');
+const session = require('express-session');
 
 const app: express.Application = express();
 

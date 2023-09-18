@@ -5,7 +5,7 @@ import Tag from '../schema';
 
 export async function getByTag(condition: any = {}, attributes: string[] = [], order: any, other: object = {}) {
     try {
-        let { count, rows } = await Tag.findAndCountAll({
+        const { count, rows } = await Tag.findAndCountAll({
             where: condition,
             attributes: attributes,
             // include: {
@@ -43,7 +43,7 @@ export async function getByTag(condition: any = {}, attributes: string[] = [], o
 
 export async function getTag(condition: any = {}, attributes: string[] = [], other: object = {}) {
     try {
-        let findObj = await Tag.findOne({
+        const findObj = await Tag.findOne({
             where: condition,
             attributes: attributes.length > 0 ? attributes : undefined,
             ...other,
@@ -57,7 +57,7 @@ export async function getTag(condition: any = {}, attributes: string[] = [], oth
 
 export async function addTag(data: any) {
     try {
-        let insertObj = await Tag.create(data);
+        const insertObj = await Tag.create(data);
         return insertObj;
     } catch (e) {
         return false;

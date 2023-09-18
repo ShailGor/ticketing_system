@@ -16,7 +16,7 @@ export async function getMany(
     attributes: string[] = [],
     other: object = {}
 ) {
-    let { count, rows } = await Question.findAndCountAll({
+    const { count, rows } = await Question.findAndCountAll({
         where: condition,
         attributes: {
             include: [
@@ -62,7 +62,7 @@ export async function getMany(
 
 export async function getOne(condition: any = {}, attributes: string[] = [], other: object = {}): Promise<false | Question | null> {
     try {
-        let Data = await Question.findOne({
+        const Data = await Question.findOne({
             where: condition,
             attributes: attributes.length > 0 ? attributes : undefined,
             include: [
@@ -102,7 +102,7 @@ export async function addQuestion(data: any, transaction: Transaction | undefine
     try {
         // console.log('data: ', data);
 
-        let insertedObj: any = await Question.create(data, {
+        const insertedObj: any = await Question.create(data, {
             include: {
                 association: questionTag,
             },
@@ -120,7 +120,7 @@ export async function updateQuestion(
     transaction: Transaction | undefined = undefined
 ): Promise<any | boolean> {
     try {
-        let updateObj = await Question.update(data, {
+        const updateObj = await Question.update(data, {
             where: { uuid: Uuid },
             transaction: transaction ? transaction : undefined,
         });
@@ -132,7 +132,7 @@ export async function updateQuestion(
 
 export async function deleteQuestion(Uuid: string, transaction: Transaction | undefined = undefined): Promise<any | boolean> {
     try {
-        let deleteData = await Question.destroy({
+        const deleteData = await Question.destroy({
             where: { uuid: Uuid },
             transaction: transaction ? transaction : undefined,
         });

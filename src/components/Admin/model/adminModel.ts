@@ -13,7 +13,7 @@ export async function getOne(condition: any = {}, attributes: string[] = [], oth
 
 export async function updateadmin(data: any, condition: any = {}): Promise<any | boolean> {
     try {
-        let updateObj = await Admin.update(data, {
+        const updateObj = await Admin.update(data, {
             where: condition,
         });
         return updateObj;

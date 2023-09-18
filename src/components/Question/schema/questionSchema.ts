@@ -12,7 +12,7 @@ export class Question extends Model {
     public user_id!: number;
     public title!: string;
     public description!: string;
-    public is_published!: Boolean;
+    public is_published!: boolean;
     public image!: string | null;
 }
 

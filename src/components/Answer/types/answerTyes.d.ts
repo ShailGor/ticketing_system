@@ -5,7 +5,7 @@ declare namespace AnswerEnvironment {
         user_id?: string;
         question_id?: string;
         answer?: string;
-        is_accepted?: Boolean;
+        is_accepted?: boolean;
         answer_image?: string | null;
         created_at?: Date;
         updated_at?: Date;

@@ -39,7 +39,7 @@ export const isEmail = (value: string) => {
     }
 };
 
-export let checkImageSize = (image: any) => {
+export const checkImageSize = (image: any) => {
     if (image) {
         if (image.size > 5 * 1024 * 1024) {
             return false;
@@ -47,7 +47,7 @@ export let checkImageSize = (image: any) => {
     }
 };
 
-export let checkImageType = (image: any) => {
+export const checkImageType = (image: any) => {
     if (image) {
         if (image.mimetype !== 'image/jpg' && image.mimetype !== 'image/jpeg' && image.mimetype !== 'image/png') {
             return false;

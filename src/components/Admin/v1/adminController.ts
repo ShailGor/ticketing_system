@@ -22,17 +22,17 @@ import { Answer } from '../../Answer/schema/answerSchema';
 export const login = async function (req: customRequest, res: Response) {
     try {
         // throw new Error('custom error');
-        let { email, password }: { email: string; password: string | Buffer } = req.body;
+        const { email, password }: { email: string; password: string | Buffer } = req.body;
 
-        let admin: any = await adminModel.getOne({ email: email }, ['uuid', 'password']);
+        const admin: any = await adminModel.getOne({ email: email }, ['uuid', 'password']);
 
         if (admin) {
             // console.log(user.password);
 
-            let validatePwd = bcrypt.compareSync(password, admin.password);
+            const validatePwd = bcrypt.compareSync(password, admin.password);
             // console.log(validatePwd);
             if (validatePwd) {
-                let jwtToken: any = await helper.jwtToken(admin.uuid);
+                const jwtToken: any = await helper.jwtToken(admin.uuid);
 
                 await client.hSet(admin.uuid, { jwt_token: jwtToken });
                 await client.expire(admin.uuid, 2 * 60 * 60);
@@ -52,12 +52,12 @@ export const login = async function (req: customRequest, res: Response) {
 };
 
 export const logout = async function (req: customRequest, res: Response) {
-    let token = req.headers.authorization;
-    let uuid: any = req.custom?.adminUuid;
+    const token = req.headers.authorization;
+    const uuid: any = req.custom?.adminUuid;
     try {
         // console.log(token);
 
-        let verify_token = await client.hGet(uuid, 'jwt_token');
+        const verify_token = await client.hGet(uuid, 'jwt_token');
 
         console.log(verify_token);
         if (verify_token == token) {
@@ -74,14 +74,14 @@ export const logout = async function (req: customRequest, res: Response) {
 };
 
 export const resetPassword = async function (req: customRequest, res: Response) {
-    let uuid: any = req.custom?.adminUuid;
-    let { old_password, new_password }: { old_password: string; new_password: string } = req.body;
+    const uuid: any = req.custom?.adminUuid;
+    const { old_password, new_password }: { old_password: string; new_password: string } = req.body;
     try {
         console.log(new_password);
 
-        let check: any = await adminModel.getOne({ uuid: uuid }, ['uuid', 'password']);
+        const check: any = await adminModel.getOne({ uuid: uuid }, ['uuid', 'password']);
         if (check) {
-            let validatePwd = bcrypt.compareSync(old_password, check.password);
+            const validatePwd = bcrypt.compareSync(old_password, check.password);
 
             if (validatePwd) {
                 await adminModel.updateadmin({ password: new_password }, { uuid: uuid });
@@ -99,10 +99,10 @@ export const resetPassword = async function (req: customRequest, res: Response) 
 };
 
 export async function userList(req: customRequest, res: Response) {
-    let uuid: any = req.custom?.adminUuid;
+    const uuid: any = req.custom?.adminUuid;
     try {
         let { page, recordsPerPage, sortOrder, sortField } = req.body;
-        let { search } = req.body;
+        const { search } = req.body;
 
         sortOrder = helper.getDefaultSortOrder(sortOrder);
         // const { orderBy, sortField, condition } = userHelper.getOrderByfield(search, sortOrder);
@@ -115,7 +115,7 @@ export async function userList(req: customRequest, res: Response) {
             return helper.createResponse(res, res.__('PAGE'), null, constants.VALIDATION_SERVER_ERR);
         }
 
-        let startPage = (page - 1) * recordsPerPage;
+        const startPage = (page - 1) * recordsPerPage;
 
         const { count, rows }: any = await userModel.getMany(startPage, recordsPerPage, undefined, orderBy, ['password'], { paranoid: false });
         // console.log(rows);
@@ -138,7 +138,7 @@ export async function userList(req: customRequest, res: Response) {
 export async function questionListByTags(req: customRequest, res: Response) {
     try {
         let { page, recordsPerPage, sortOrder } = req.body;
-        let { search } = req.body;
+        const { search } = req.body;
 
         sortOrder = helper.getDefaultSortOrder(sortOrder);
         // const { orderBy, sortField, condition } = questionHelper.getOrderByfield(search, sortOrder);
@@ -150,20 +150,20 @@ export async function questionListByTags(req: customRequest, res: Response) {
             return helper.createResponse(res, res.__('PAGE'), null, constants.VALIDATION_SERVER_ERR);
         }
 
-        let startPage = (page - 1) * recordsPerPage;
+        const startPage = (page - 1) * recordsPerPage;
 
-        let order = [['tag', sortOrder]];
-        let condition: any = [];
+        const order = [['tag', sortOrder]];
+        const condition: any = [];
         if (search) {
-            let filter = search.filter;
-            for (let key in filter) {
+            const filter = search.filter;
+            for (const key in filter) {
                 const data: any = filter[key];
                 condition.push({
                     [key]: { [Op.like]: `%${data}%` },
                 });
             }
         }
-        let other = {
+        const other = {
             include: {
                 model: Question,
                 as: 'questions',
@@ -215,13 +215,13 @@ export async function questionListByTags(req: customRequest, res: Response) {
 
 export async function addtag(req: customRequest, res: Response) {
     try {
-        let { Tag } = req.body;
+        const { Tag } = req.body;
 
-        let check = await tagmodel.getTag({ tag: Tag });
+        const check = await tagmodel.getTag({ tag: Tag });
         console.log(check);
 
         if (!check) {
-            let data = await tagmodel.addTag({ tag: Tag });
+            const data = await tagmodel.addTag({ tag: Tag });
             logger.info(__filename, 'Add Tag', undefined, 'Add Tag data', {});
             return helper.createResponse(res, res.__('ADMIN.Tag.created'), data, constants.SUCCESS);
         }
@@ -240,7 +240,7 @@ export async function userReport(req: customRequest, res: Response) {
 
         const orderBy = [[sequelize.literal('reputations'), 'DESC']];
         const { count, rows }: any = await userModel.getMany(undefined, undefined, undefined, orderBy, ['password'], { paranoid: false });
-        let userDetails = rows;
+        const userDetails = rows;
         // console.log(userDetails[0].dataValues.reputations);
 
         userDetails.map(function (user: any) {
@@ -291,7 +291,7 @@ export async function userReport(req: customRequest, res: Response) {
 
                 // console.log(dataList);
 
-                let options = {
+                const options = {
                     height: '12in',
                     width: '30in',
                     header: {
@@ -304,7 +304,7 @@ export async function userReport(req: customRequest, res: Response) {
                 filename = 'user' + Date.now() + '.pdf';
                 reportPath = '/home/shail/Desktop/Ticketing_System/Reports/' + filename;
 
-                let pdf = await createPDF(dataList, options, reportPath);
+                const pdf = await createPDF(dataList, options, reportPath);
                 // return res.download(reportPath);
                 return helper.createResponse(res, res.__('ADMIN.Report.pdf'), undefined, constants.SUCCESS);
             }

@@ -20,23 +20,23 @@ import { client } from '../../utils/Redis';
 
 export const authentication = async function (req: customRequest, res: Response, next: NextFunction) {
     try {
-        let token: string = req.headers.authorization as string;
+        const token: string = req.headers.authorization as string;
 
         if (!token) {
             return helper.createResponse(res, res.__('JWT_TOKEN.Apply'), undefined, constants.VALIDATION_SERVER_ERR);
         }
-        let jwtToken: any = jwt.verify(token, process.env.JWT_SECRET_KEY as string);
-        let uuid: string = jwtToken.uuid;
+        const jwtToken: any = jwt.verify(token, process.env.JWT_SECRET_KEY as string);
+        const uuid: string = jwtToken.uuid;
         // console.log(jwtToken);
 
-        let verify_token = await client.hGet(uuid, 'jwt_token');
+        const verify_token = await client.hGet(uuid, 'jwt_token');
         if (!verify_token) {
             return helper.createResponse(res, res.__('JWT_TOKEN.not_matched'), undefined, constants.UNAUTHORIZED);
         }
 
-        let admin_uuid: any = await adminModel.getOne({ uuid: uuid }, ['uuid']);
+        const admin_uuid: any = await adminModel.getOne({ uuid: uuid }, ['uuid']);
 
-        let verify_uuid: any = await userModel.getOne(
+        const verify_uuid: any = await userModel.getOne(
             {
                 uuid: uuid,
             },

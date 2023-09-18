@@ -6,7 +6,7 @@ import { Answer } from '../schema/answerSchema';
 import { answerInterface } from '../types/answerTyes';
 
 export async function getMany(page: number, recordsPerPage: number, condition: any, order: any, attributes: string[] = []) {
-    let { count, rows } = await Answer.findAndCountAll({
+    const { count, rows } = await Answer.findAndCountAll({
         where: condition,
         attributes: {
             include: [
@@ -94,7 +94,7 @@ export async function getOne(condition: any = {}, attributes: string[] = [], oth
 
 export async function addAns(data: any, transaction: Transaction | undefined = undefined): Promise<Answer | boolean> {
     try {
-        let insertedObj: any = await Answer.create(data, {
+        const insertedObj: any = await Answer.create(data, {
             transaction: transaction ? transaction : undefined,
         });
         return insertedObj;
@@ -105,7 +105,7 @@ export async function addAns(data: any, transaction: Transaction | undefined = u
 
 export async function updateAns(data: any, condition: any = {}, transaction: Transaction | undefined = undefined): Promise<any | boolean> {
     try {
-        let updateObj = await Answer.update(data, {
+        const updateObj = await Answer.update(data, {
             where: condition,
             transaction: transaction ? transaction : undefined,
         });
@@ -117,7 +117,7 @@ export async function updateAns(data: any, condition: any = {}, transaction: Tra
 
 export async function deleteAns(Uuid: string, transaction: Transaction | undefined = undefined): Promise<any | boolean> {
     try {
-        let deleteData = await Answer.destroy({
+        const deleteData = await Answer.destroy({
             where: { uuid: Uuid },
             transaction: transaction ? transaction : undefined,
         });

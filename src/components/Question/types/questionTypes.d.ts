@@ -5,7 +5,7 @@ declare namespace QuestionEnvironment {
         user_id?: number;
         title?: string;
         description?: string;
-        is_published?: Boolean;
+        is_published?: boolean;
         tags?: string;
         image?: string | null;
         created_at?: Date;

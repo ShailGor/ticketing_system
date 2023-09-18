@@ -5,7 +5,7 @@ import Score from '../schema';
 
 export async function getAll(attributes: string[] = []): Promise<Score[] | false> {
     try {
-        let data = await Score.findAll({
+        const data = await Score.findAll({
             include: {
                 model: User,
                 as: 'user',
@@ -32,7 +32,7 @@ export async function countScore(condition: any = {}): Promise<number | false> {
 
 export async function totalScore(condition: any = {}): Promise<number | false> {
     try {
-        let score = await Score.sum('reputation', {
+        const score = await Score.sum('reputation', {
             where: condition,
         });
         return score;
@@ -43,7 +43,7 @@ export async function totalScore(condition: any = {}): Promise<number | false> {
 
 export async function addScore(data: any): Promise<Score | boolean> {
     try {
-        let insertedObj = await Score.create(data);
+        const insertedObj = await Score.create(data);
         return insertedObj;
     } catch (e) {
         return false;

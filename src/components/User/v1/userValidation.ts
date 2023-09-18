@@ -8,7 +8,7 @@ import isLength from 'validator/lib/isLength';
 
 class UserValidations {
     add(req: customRequest, res: Response, next: NextFunction) {
-        let { first_name, last_name, display_name, email, password, phone_number } = req.body;
+        const { first_name, last_name, display_name, email, password, phone_number } = req.body;
 
         if (!first_name) {
             return helper.createResponse(res, res.__('USER.Validations.first_name.required'), undefined, constants.VALIDATION_SERVER_ERR);
@@ -53,7 +53,7 @@ class UserValidations {
     }
 
     update(req: customRequest, res: Response, next: NextFunction) {
-        let { first_name, last_name, display_name, email, password, phone_number } = req.body;
+        const { first_name, last_name, display_name, email, password, phone_number } = req.body;
 
         if (req.body.first_name != null) {
             if (parseInt(first_name) || isEmpty(first_name)) {
@@ -96,7 +96,7 @@ class UserValidations {
     }
 
     login(req: customRequest, res: Response, next: NextFunction) {
-        let { email, password }: userInterface = req.body;
+        const { email, password }: userInterface = req.body;
 
         if (!email) {
             return helper.createResponse(res, res.__('USER.Validations.login.email'), undefined, constants.VALIDATION_SERVER_ERR);
@@ -108,7 +108,7 @@ class UserValidations {
     }
 
     forgotPassword(req: customRequest, res: Response, next: NextFunction) {
-        let { name } = req.body;
+        const { name } = req.body;
 
         if (!name) {
             return helper.createResponse(res, res.__('USER.Validations.forgotPassword.name'), undefined, constants.VALIDATION_SERVER_ERR);
@@ -116,7 +116,7 @@ class UserValidations {
         next();
     }
     otpVerify(req: customRequest, res: Response, next: NextFunction) {
-        let { uuid, otp } = req.body;
+        const { uuid, otp } = req.body;
 
         if (!uuid) {
             return helper.createResponse(res, res.__('USER.Validations.otpVerify.uuid'), undefined, constants.VALIDATION_SERVER_ERR);
@@ -127,7 +127,7 @@ class UserValidations {
         next();
     }
     resendOtp(req: customRequest, res: Response, next: NextFunction) {
-        let uuid = req.body.uuid;
+        const uuid = req.body.uuid;
         console.log('aa', uuid);
 
         if (!uuid) {
@@ -136,7 +136,7 @@ class UserValidations {
         next();
     }
     resetPassword(req: customRequest, res: Response, next: NextFunction) {
-        let { uuid, new_password } = req.body;
+        const { uuid, new_password } = req.body;
 
         if (!uuid) {
             return helper.createResponse(res, res.__('USER.Validations.resetPassword.uuid'), undefined, constants.VALIDATION_SERVER_ERR);

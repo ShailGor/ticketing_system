@@ -6,7 +6,7 @@ export async function sendEmail(email: string, emailToken: string | undefined, o
     try {
         sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
         if (emailToken !== undefined) {
-            let msg = {
+            const msg = {
                 to: email,
                 from: 'shail.gor@smartsensesolutions.com',
                 subject: 'Email verification',
@@ -20,7 +20,7 @@ export async function sendEmail(email: string, emailToken: string | undefined, o
             // console.log(msg);
             return await sgMail.send(msg);
         } else if (otp !== undefined) {
-            let msg = {
+            const msg = {
                 to: email,
                 from: 'shail.gor@smartsensesolutions.com',
                 subject: 'Forgot Password',
@@ -38,7 +38,7 @@ export async function sendEmail(email: string, emailToken: string | undefined, o
 
 export function generateOtp() {
     // let otp = Math.floor(Math.random() * 1000000) + 1000000;
-    var digits = '0123456789';
+    const digits = '0123456789';
     let otp: string = '';
     for (let i = 0; i < 6; i++) {
         otp += digits[Math.floor(Math.random() * 10)];
@@ -49,11 +49,11 @@ export function generateOtp() {
 
 export function getOrderByfield(search: any, sortOrder: any) {
     let orderBy, sortField;
-    let condition: any = [];
+    const condition: any = [];
 
     if (search) {
-        let filter = search.filter;
-        for (let key in filter) {
+        const filter = search.filter;
+        for (const key in filter) {
             const data: any = filter[key];
             // console.log(data);
 

@@ -2,7 +2,7 @@ import { Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 export function createResponse(res: Response, message: string, Data: any, status: number | undefined) {
-    let response_status: {
+    const response_status: {
         status: number | undefined;
         message: string;
         payload: any;
@@ -44,7 +44,7 @@ export const getDefaultSortOrder = (sortOrder: string): string => {
 };
 
 export async function jwtToken(uuid: string) {
-    let token: any = jwt.sign(
+    const token: any = jwt.sign(
         {
             uuid: uuid,
         },

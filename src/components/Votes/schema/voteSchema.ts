@@ -8,7 +8,7 @@ export class Vote extends Model {
     public user_id!: number;
     public question_id!: number;
     public answer_id!: number;
-    public vote!: Boolean;
+    public vote!: boolean;
 }
 
 Vote.init(
