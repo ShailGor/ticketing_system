@@ -1,26 +1,26 @@
-import express, { Application } from 'express';
-import fileUpload from 'express-fileupload';
-import i18n from './i18n';
+import express, { Application } from 'express'
+import fileUpload from 'express-fileupload'
+import i18n from './i18n'
 
 export default (app: Application) => {
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
+	app.use(express.json())
+	app.use(express.urlencoded({ extended: true }))
 
-    app.set('view engine', 'ejs');
+	app.set('view engine', 'ejs')
 
-    app.get('/', (req, res) => {
-        res.render('pages/index');
-    });
+	app.get('/', (req, res) => {
+		res.render('pages/index')
+	})
 
-    app.use(i18n.init);
-    i18n.setLocale('en');
+	app.use(i18n.init)
+	i18n.setLocale('en')
 
-    app.use(
-        fileUpload({
-            parseNested: true,
-            createParentPath: true,
-        })
-    );
+	app.use(
+		fileUpload({
+			parseNested: true,
+			createParentPath: true
+		})
+	)
 
-    app.use(express.static('public'));
-};
+	app.use(express.static('public'))
+}

@@ -14,4 +14,4 @@ RUN tsc
 
 RUN npm install pm2 -g
 
-CMD ["pm2-runtime","--raw","build/server.js","--name=leave-request-management","--no-daemon"]    
+CMD ["pm2-runtime","--raw","build/server.js","--name=ticketing_system","--no-daemon"]    

@@ -12,7 +12,7 @@ import { client } from '../../../utils/Redis'
 import * as userHelper from './userHelper'
 import bcrypt from 'bcrypt'
 import { Op } from 'sequelize'
-import scoreModel from '../../Score/model'
+// import scoreModel from '../../Score/model'
 
 export const list = async (req: Request, res: Response) => {
 	try {
@@ -74,6 +74,8 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const addUser = async (req: customRequest, res: Response) => {
 	try {
+		console.log('here')
+
 		const { first_name, last_name, display_name, email, password, phone_number, skills } = req.body
 		const body: associateInterface = {
 			first_name: first_name,
@@ -91,16 +93,16 @@ export const addUser = async (req: customRequest, res: Response) => {
 		if (UniqueUser) {
 			return helper.createResponse(res, UniqueUser, undefined, constants.VALIDATION_SERVER_ERR)
 		}
+		console.log('body.skills', body.skills)
 
-		const skills_array: any = JSON.parse(body.skills!)
-		// console.log(skills_array);
+		const skills_array: any = body.skills!
+		console.log(skills_array)
 		body.userSkills = skills_array.map((s_id: number) => {
 			// return {a_id};
 			return { skill_id: s_id }
 		})
-		console.log(body.userSkills)
 
-		const profile_image = req.files.profile_image ? req.files.profile_image : null
+		const profile_image = req.files ? (req.files.profile_image ? req.files.profile_image : null) : null
 
 		if (profile_image !== null) {
 			//     body.profile_image = null;
@@ -118,8 +120,8 @@ export const addUser = async (req: customRequest, res: Response) => {
 		const addUser: any = await userModel.createUser(body)
 		console.log(addUser)
 
-		// await client.hSet(verification_token, { uuid: addUser.uuid });
-		// await client.expire(verification_token, 2 * 60);
+		await client.hSet(verification_token, { uuid: addUser.uuid })
+		await client.expire(verification_token, 2 * 60)
 
 		await userHelper.sendEmail(email, verification_token, undefined)
 
